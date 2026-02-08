@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão - Consultório Médico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1abc9c;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gray-color: #95a5a6;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            text-align: center;
+            padding: 20px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            padding: 0;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-menu i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 0;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--primary-color);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background-color: #e9ecef;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-bottom-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* Content Panels */
+        .content-panel {
+            background-color: white;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #16a085;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        table .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .edit-btn {
+            color: var(--secondary-color);
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .delete-btn {
+            color: var(--danger-color);
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Calendar Styles */
+        #calendar-container {
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-weekdays, .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #ddd;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-weekdays div {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .calendar-days div {
+            background-color: white;
+            padding: 15px;
+            min-height: 120px;
+            overflow-y: auto;
+        }
+
+        .calendar-day.empty {
+            background-color: #f9f9f9;
+        }
+
+        .calendar-day.today {
+            background-color: rgba(52, 152, 219, 0.1);
+            border: 2px solid var(--secondary-color);
+        }
+
+        .calendar-event {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .calendar-event:hover {
+            opacity: 0.9;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .nav-menu {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .nav-menu a {
+                border-left: none;
+                border-bottom: 4px solid transparent;
+                padding: 10px 15px;
+            }
+            
+            .nav-menu a:hover, .nav-menu a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--accent-color);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-days div {
+                min-height: 80px;
+                padding: 10px 5px;
+            }
+            
+            .calendar-event {
+                font-size: 0.7rem;
+                padding: 3px 5px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Med<span>System</span></h1>
+                <p>Sistema de Gestão Médica</p>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" data-tab="patient-registration"><i class="fas fa-user-plus"></i> Cadastrar Paciente</a></li>
+                <li><a href="#" data-tab="clinical-records"><i class="fas fa-notes-medical"></i> Fichas Clínicas</a></li>
+                <li><a href="#" data-tab="appointment-schedule"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
+                <li><a href="#" data-tab="calendar-view"><i class="fas fa-calendar-day"></i> Calendário</a></li>
+                <li><a href="#" data-tab="export-data"><i class="fas fa-file-export"></i> Exportar Dados</a></li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="user-info">
+                    <div class="user-avatar">DR</div>
+                    <div>
+                        <p style="font-weight: 600;">Dr. Médico</p>
+                        <p style="font-size: 0.9rem; color: var(--gray-color);">Consultório</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Cards -->
+            <div id="dashboard" class="content-panel active">
+                <div class="dashboard-cards">
+                    <div class="card" data-tab="clinical-records">
+                        <i class="fas fa-notes-medical"></i>
+                        <h3>Fichas Clínicas</h3>
+                        <p id="patient-count">0</p>
+                    </div>
+                    <div class="card" data-tab="appointment-schedule">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3>Consultas Hoje</h3>
+                        <p id="today-appointments">0</p>
+                    </div>
+                    <div class="card" data-tab="calendar-view">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Próximos 7 Dias</h3>
+                        <p id="week-appointments">0</p>
+                    </div>
+                    <div class="card" data-tab="export-data">
+                        <i class="fas fa-file-pdf"></i>
+                        <h3>PDFs Gerados</h3>
+                        <p id="pdf-count">0</p>
+                    </div>
+                </div>
+                
+                <div style="background-color: white; border-radius: var(--border-radius); padding: 25px; box-shadow: var(--box-shadow); margin-top: 30px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 20px;">Atalhos Rápidos</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" data-tab="patient-registration">
+                            <i class="fas fa-user-plus"></i> Novo Paciente
+                        </button>
+                        <button class="btn btn-success" data-tab="appointment-schedule">
+                            <i class="fas fa-plus-circle"></i> Nova Consulta
+                        </button>
+                        <button class="btn btn-outline" data-tab="export-data">
+                            <i class="fas fa-file-export"></i> Exportar Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Registration Form -->
+            <div id="patient-registration" class="content-panel">
+                <h2 style="color: var(--primary-color); margin-bottom: 25px;">Cadastro de Paciente</h2>
+                
+                <div class="form-section">
+                    <h3>Informações Pessoais</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-name">Nome Completo *</label>
+                            <input type="text" id="patient-name" placeholder="Digite o nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-cpf">CPF</label>
+                            <input type="text" id="patient-cpf" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-dob">Data de Nascimento</label>
+                            <input type="date" id="patient-dob">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-phone">Telefone</label>
+                            <input type="text" id="patient-phone" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-email">E-mail</label>
+                            <input type="email" id="patient-email" placeholder="paciente@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-gender">Sexo</label>
+                            <select id="patient-gender">
+                                <option value="">Selecione</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                                <option value="Outro">Outro</option>
+                                <option value="Prefiro não informar">Prefiro não informar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Endereço</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-address">Endereço</label>
+                            <input type="text" id="patient-address" placeholder="Rua, número, complemento">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-city">Cidade</label>
+                            <input type="text" id="patient-city" placeholder="Cidade">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-state">Estado</label>
+                            <select id="patient-state">
+                                <option value="">Selecione</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Informações Médicas</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-allergies">Alergias</label>
+                            <textarea id="patient-allergies" placeholder="Liste as alergias do paciente"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-medications">Medicações em Uso</label>
+                            <textarea id="patient-medications" placeholder="Liste as medicações em uso"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-history">Histórico Médico</label>
+                            <textarea id="patient-history" placeholder="Descreva o histórico médico do paciente"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" id="save-patient">
+                        <i class="fas fa-save"></i> Salvar Paciente
+                    </button>
+                    <button class="btn btn-outline" id="clear-form">
+                        <i class="fas fa-eraser"></i> Limpar Formulário
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Clinical Records -->
+            <div id="clinical-records" class="content-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2 style="color: var(--primary-color);">Fichas Clínicas</h2>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="add-clinical-record">
+                            <i class="fas fa-plus"></i> Nova Ficha
+                        </button>
+                        <button class="btn btn-outline" id="export-clinical-pdf">
+                            <i class="fas fa-file-pdf"></i> Exportar PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="clinical-table">
+                        <thead>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>Última Consulta</th>
+                                <th>Próxima Consulta</th>
+                                <th>Condição</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clinical-table-body">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Appointment Schedule -->
+            <div id="appointment-schedule" class="content-panel">
+                <div class="tabs" id="schedule-tabs">
+                    <div class="tab active" data-schedule-tab="today">Hoje</div>
+                    <div class="tab" data-schedule-tab="tomorrow">Amanhã</div>
+                    <div class="tab" data-schedule-tab="week">Esta Semana</div>
+                    <div class="tab" data-schedule-tab="all">Todos os Agendamentos</div>
+                </div>
+                
+                <div id="schedule-today" class="schedule-panel" style="display: block;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 25px 0;">
+                        <h3 style="color: var(--primary-color);">Consultas de Hoje</h3>
+                        <button class="btn btn-success" id="add-appointment">
+                            <i class="fas fa-plus-circle"></i> Nova Consulta
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="appointment-table">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Paciente</th>
+                                    <th>Motivo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointment-table-body">
+                                <!-- Dados serão inseridos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calendar View -->
+            <div id="calendar-view" class="content-panel">
+                <div class="calendar-header">
+                    <h2 style="color: var(--primary-color);" id="calendar-month">Fevereiro 2024</h2>
+                    <div class="calendar-nav">
+                        <button class="btn btn-outline" id="prev-month">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-primary" id="today-btn">Hoje</button>
+                        <button class="btn btn-outline" id="next-month">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="calendar-container">
+                    <div class="calendar-weekdays">
+                        <div>Dom</div>
+                        <div>Seg</div>
+                        <div>Ter</div>
+                        <div>Qua</div>
+                        <div>Qui</div>
+                        <div>Sex</div>
+                        <div>Sáb</div>
+                    </div>
+                    <div class="calendar-days" id="calendar-days">
+                        <!-- Dias serão gerados via JavaScript -->
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Legenda</h3>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background-color: var(--accent-color); border-radius: 4px;"></div>
+                            <span>Consulta Marcada</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background-color: var(--secondary-color); border-radius: 4px;"></div>
+                            <span>Consulta Realizada</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 20px; height: 20px; background-color: var(--danger-color); border-radius: 4px;"></div>
+                            <span>Consulta Cancelada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Data -->
+            <div id="export-data" class="content-panel">
+                <h2 style="color: var(--primary-color); margin-bottom: 25px;">Exportar Dados</h2>
+                
+                <div class="form-section">
+                    <h3>Exportar Fichas Clínicas</h3>
+                    <p style="margin-bottom: 20px;">Selecione os pacientes para exportar as fichas clínicas em formato PDF.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="select-all-patients"></th>
+                                    <th>Paciente</th>
+                                    <th>Última Atualização</th>
+                                    <th>Exportar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="export-patients-table">
+                                <!-- Dados serão inseridos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="button-group" style="margin-top: 20px;">
+                        <button class="btn btn-success" id="export-selected-patients">
+                            <i class="fas fa-file-pdf"></i> Exportar Fichas Selecionadas
+                        </button>
+                        <button class="btn btn-primary" id="export-all-patients">
+                            <i class="fas fa-file-archive"></i> Exportar Todas as Fichas
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Exportar Agenda</h3>
+                    <p style="margin-bottom: 20px;">Selecione o período para exportar os agendamentos.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="export-start-date">Data Inicial</label>
+                            <input type="date" id="export-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="export-end-date">Data Final</label>
+                            <input type="date" id="export-end-date">
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-success" id="export-schedule-pdf">
+                            <i class="fas fa-file-pdf"></i> Exportar Agenda em PDF
+                        </button>
+                        <button class="btn btn-primary" id="export-schedule-csv">
+                            <i class="fas fa-file-csv"></i> Exportar Agenda em CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p>MedSystem - Sistema de Gestão para Consultório © 2024 | Todos os direitos reservados</p>
+                <p>Este sistema armazena dados localmente no seu navegador. Para backup seguro, exporte regularmente os dados.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Appointment Details -->
+    <div class="modal" id="appointment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes da Consulta</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="appointment-modal-content">
+                    <!-- Conteúdo será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        // Dados iniciais (simulando banco de dados local)
+        let patients = JSON.parse(localStorage.getItem('medsystem_patients')) || [];
+        let appointments = JSON.parse(localStorage.getItem('medsystem_appointments')) || [];
+        let clinicalRecords = JSON.parse(localStorage.getItem('medsystem_clinical_records')) || [];
+        let pdfCount = parseInt(localStorage.getItem('medsystem_pdf_count')) || 0;
+        
+        // Elementos da interface
+        const pageTitle = document.getElementById('page-title');
+        const patientCount = document.getElementById('patient-count');
+        const todayAppointments = document.getElementById('today-appointments');
+        const weekAppointments = document.getElementById('week-appointments');
+        const pdfCountElement = document.getElementById('pdf-count');
+        
+        // Atualizar contadores do dashboard
+        function updateDashboardCounters() {
+            patientCount.textContent = patients.length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayApps = appointments.filter(app => app.date === today).length;
+            todayAppointments.textContent = todayApps;
+            
+            // Próximos 7 dias
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            const weekApps = appointments.filter(app => {
+                const appDate = new Date(app.date);
+                const today = new Date();
+                return appDate >= today && appDate <= nextWeek;
+            }).length;
+            weekAppointments.textContent = weekApps;
+            
+            pdfCountElement.textContent = pdfCount;
+        }
+        
+        // Navegação entre abas
+        document.querySelectorAll('.nav-menu a, .card[data-tab], .btn[data-tab]').forEach(element => {
+            element.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const tabId = this.getAttribute('data-tab');
+                
+                // Atualizar menu ativo
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                if (this.classList.contains('nav-menu')) {
+                    this.classList.add('active');
+                } else {
+                    // Encontrar o link correspondente no menu
+                    const menuLink = document.querySelector(`.nav-menu a[data-tab="${tabId}"]`);
+                    if (menuLink) {
+                        menuLink.classList.add('active');
+                    }
+                }
+                
+                // Mostrar aba correspondente
+                document.querySelectorAll('.content-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                
+                document.getElementById(tabId).classList.add('active');
+                pageTitle.textContent = document.querySelector(`.nav-menu a[data-tab="${tabId}"]`).textContent.trim();
+                
+                // Atualizar dados se necessário
+                if (tabId === 'clinical-records') {
+                    loadClinicalRecordsTable();
+                } else if (tabId === 'appointment-schedule') {
+                    loadAppointmentsTable();
+                } else if (tabId === 'calendar-view') {
+                    generateCalendar();
+                } else if (tabId === 'export-data') {
+                    loadExportPatientsTable();
+                }
+                
+                updateDashboardCounters();
+            });
+        });
+        
+        // Abas da agenda
+        document.querySelectorAll('.tab[data-schedule-tab]').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Aqui você pode implementar a lógica para carregar diferentes visões da agenda
+                const scheduleTab = this.getAttribute('data-schedule-tab');
+                // Por enquanto, vamos apenas mostrar uma mensagem
+                loadAppointmentsTable(scheduleTab);
+            });
+        });
+        
+        // Salvar paciente
+        document.getElementById('save-patient').addEventListener('click', function() {
+            const patient = {
+                id: Date.now().toString(),
+                name: document.getElementById('patient-name').value,
+                cpf: document.getElementById('patient-cpf').value,
+                dob: document.getElementById('patient-dob').value,
+                phone: document.getElementById('patient-phone').value,
+                email: document.getElementById('patient-email').value,
+                gender: document.getElementById('patient-gender').value,
+                address: document.getElementById('patient-address').value,
+                city: document.getElementById('patient-city').value,
+                state: document.getElementById('patient-state').value,
+                allergies: document.getElementById('patient-allergies').value,
+                medications: document.getElementById('patient-medications').value,
+                history: document.getElementById('patient-history').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            if (!patient.name) {
+                alert('Por favor, preencha o nome do paciente.');
+                return;
+            }
+            
+            patients.push(patient);
+            localStorage.setItem('medsystem_patients', JSON.stringify(patients));
+            
+            // Criar uma ficha clínica inicial para o paciente
+            const clinicalRecord = {
+                id: Date.now().toString(),
+                patientId: patient.id,
+                patientName: patient.name,
+                lastAppointment: null,
+                nextAppointment: null,
+                condition: 'Aguardando primeira consulta',
+                notes: '',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            clinicalRecords.push(clinicalRecord);
+            localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
+            
+            alert('Paciente cadastrado com sucesso!');
+            document.getElementById('clear-form').click();
+            updateDashboardCounters();
+        });
+        
+        // Limpar formulário
+        document.getElementById('clear-form').addEventListener('click', function() {
+            document.querySelectorAll('#patient-registration input, #patient-registration select, #patient-registration textarea').forEach(element => {
+                if (element.type !== 'button') {
+                    element.value = '';
+                }
+            });
+        });
+        
+        // Carregar tabela de fichas clínicas
+        function loadClinicalRecordsTable() {
+            const tableBody = document.getElementById('clinical-table-body');
+            tableBody.innerHTML = '';
+            
+            clinicalRecords.forEach(record => {
+                const patient = patients.find(p => p.id === record.patientId);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${record.patientName}</td>
+                    <td>${record.lastAppointment ? formatDate(record.lastAppointment) : 'N/A'}</td>
+                    <td>${record.nextAppointment ? formatDate(record.nextAppointment) : 'N/A'}</td>
+                    <td>${record.condition}</td>
+                    <td class="actions">
+                        <button class="action-btn edit-btn" data-id="${record.id}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${record.id}" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-btn" style="color: var(--accent-color);" data-id="${record.id}" title="Visualizar">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Adicionar eventos aos botões
+            document.querySelectorAll('#clinical-table-body .edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const recordId = this.getAttribute('data-id');
+                    editClinicalRecord(recordId);
+                });
+            });
+            
+            document.querySelectorAll('#clinical-table-body .delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const recordId = this.getAttribute('data-id');
+                    if (confirm('Tem certeza que deseja excluir esta ficha clínica?')) {
+                        deleteClinicalRecord(recordId);
+                    }
+                });
+            });
+        }
+        
+        // Funções para fichas clínicas
+        function editClinicalRecord(id) {
+            alert(`Editar ficha clínica ${id} - Em um sistema real, isso abriria um formulário de edição.`);
+        }
+        
+        function deleteClinicalRecord(id) {
+            clinicalRecords = clinicalRecords.filter(record => record.id !== id);
+            localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
+            loadClinicalRecordsTable();
+            updateDashboardCounters();
+        }
+        
+        // Carregar tabela de consultas
+        function loadAppointmentsTable(filter = 'today') {
+            const tableBody = document.getElementById('appointment-table-body');
+            tableBody.innerHTML = '';
+            
+            let filteredAppointments = [...appointments];
+            
+            // Aplicar filtro
+            if (filter === 'today') {
+                const today = new Date().toISOString().split('T')[0];
+                filteredAppointments = appointments.filter(app => app.date === today);
+            } else if (filter === 'tomorrow') {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                filteredAppointments = appointments.filter(app => app.date === tomorrowStr);
+            } else if (filter === 'week') {
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                filteredAppointments = appointments.filter(app => {
+                    const appDate = new Date(app.date);
+                    const today = new Date();
+                    return appDate >= today && appDate <= nextWeek;
+                });
+            }
+            
+            // Ordenar por horário
+            filteredAppointments.sort((a, b) => a.time.localeCompare(b.time));
+            
+            filteredAppointments.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${appointment.time}</td>
+                    <td>${patient ? patient.name : 'Paciente não encontrado'}</td>
+                    <td>${appointment.reason}</td>
+                    <td>
+                        <span class="status-badge" style="
+                            background-color: ${appointment.status === 'confirmed' ? 'var(--accent-color)' : 
+                                            appointment.status === 'completed' ? 'var(--secondary-color)' : 
+                                            appointment.status === 'cancelled' ? 'var(--danger-color)' : 'var(--warning-color)'};
+                            color: white;
+                            padding: 5px 10px;
+                            border-radius: 20px;
+                            font-size: 0.85rem;
+                        ">
+                            ${appointment.status === 'confirmed' ? 'Confirmada' : 
+                             appointment.status === 'completed' ? 'Realizada' : 
+                             appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente'}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <button class="action-btn edit-btn" data-id="${appointment.id}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${appointment.id}" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-btn view-appointment-btn" data-id="${appointment.id}" title="Visualizar" style="color: var(--accent-color);">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Adicionar eventos aos botões de visualização
+            document.querySelectorAll('.view-appointment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const appointmentId = this.getAttribute('data-id');
+                    showAppointmentDetails(appointmentId);
+                });
+            });
+        }
+        
+        // Mostrar detalhes da consulta em modal
+        function showAppointmentDetails(appointmentId) {
+            const appointment = appointments.find(a => a.id === appointmentId);
+            if (!appointment) return;
+            
+            const patient = patients.find(p => p.id === appointment.patientId);
+            const modalContent = document.getElementById('appointment-modal-content');
+            
+            modalContent.innerHTML = `
+                <div class="form-group">
+                    <label>Paciente:</label>
+                    <p style="font-weight: 600; font-size: 1.1rem;">${patient ? patient.name : 'N/A'}</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data:</label>
+                        <p>${formatDate(appointment.date)}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Horário:</label>
+                        <p>${appointment.time}</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Motivo da Consulta:</label>
+                    <p>${appointment.reason || 'N/A'}</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Observações:</label>
+                    <p>${appointment.notes || 'Nenhuma observação registrada.'}</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Status:</label>
+                    <p>
+                        <span class="status-badge" style="
+                            background-color: ${appointment.status === 'confirmed' ? 'var(--accent-color)' : 
+                                            appointment.status === 'completed' ? 'var(--secondary-color)' : 
+                                            appointment.status === 'cancelled' ? 'var(--danger-color)' : 'var(--warning-color)'};
+                            color: white;
+                            padding: 5px 10px;
+                            border-radius: 20px;
+                            font-size: 0.85rem;
+                        ">
+                            ${appointment.status === 'confirmed' ? 'Confirmada' : 
+                             appointment.status === 'completed' ? 'Realizada' : 
+                             appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente'}
+                        </span>
+                    </p>
+                </div>
+                
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn btn-primary" id="edit-appointment-btn" data-id="${appointment.id}">
+                        <i class="fas fa-edit"></i> Editar Consulta
+                    </button>
+                    <button class="btn btn-success" id="complete-appointment-btn" data-id="${appointment.id}">
+                        <i class="fas fa-check-circle"></i> Marcar como Realizada
+                    </button>
+                </div>
+            `;
+            
+            // Abrir modal
+            document.getElementById('appointment-modal').classList.add('active');
+            
+            // Adicionar eventos aos botões do modal
+            document.getElementById('edit-appointment-btn').addEventListener('click', function() {
+                alert(`Editar consulta ${appointmentId} - Em um sistema real, isso abriria um formulário de edição.`);
+            });
+            
+            document.getElementById('complete-appointment-btn').addEventListener('click', function() {
+                appointment.status = 'completed';
+                localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
+                loadAppointmentsTable();
+                updateDashboardCounters();
+                document.querySelector('.close-modal').click();
+                alert('Consulta marcada como realizada!');
+            });
+        }
+        
+        // Fechar modal
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('appointment-modal').classList.remove('active');
+        });
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('appointment-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+        
+        // Calendário
+        let currentDate = new Date();
+        
+        function generateCalendar() {
+            const monthYear = document.getElementById('calendar-month');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                               "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            
+            monthYear.textContent = `${monthNames[month]} ${year}`;
+            
+            // Primeiro dia do mês
+            const firstDay = new Date(year, month, 1);
+            // Último dia do mês
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // Dias da semana (0 = Domingo, 1 = Segunda, etc.)
+            const startingDay = firstDay.getDay();
+            
+            // Limpar calendário
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+            
+            // Dias vazios antes do primeiro dia do mês
+            for (let i = 0; i < startingDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.classList.add('calendar-day', 'empty');
+                calendarDays.appendChild(emptyDay);
+            }
+            
+            // Dias do mês
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                dayElement.classList.add('calendar-day');
+                
+                // Verificar se é hoje
+                const today = new Date();
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.innerHTML = `<strong>${day}</strong>`;
+                
+                // Verificar se há consultas neste dia
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayAppointments = appointments.filter(app => app.date === dateStr);
+                
+                dayAppointments.forEach(app => {
+                    const patient = patients.find(p => p.id === app.patientId);
+                    const eventElement = document.createElement('div');
+                    eventElement.classList.add('calendar-event');
+                    eventElement.textContent = `${app.time} - ${patient ? patient.name.substring(0, 10) + '...' : 'Consulta'}`;
+                    eventElement.title = `${app.time} - ${patient ? patient.name : 'Consulta'} - ${app.reason || 'Sem motivo especificado'}`;
+                    eventElement.addEventListener('click', function() {
+                        showAppointmentDetails(app.id);
+                    });
+                    
+                    // Cor baseada no status
+                    if (app.status === 'completed') {
+                        eventElement.style.backgroundColor = 'var(--secondary-color)';
+                    } else if (app.status === 'cancelled') {
+                        eventElement.style.backgroundColor = 'var(--danger-color)';
+                    }
+                    
+                    dayElement.appendChild(eventElement);
+                });
+                
+                calendarDays.appendChild(dayElement);
+            }
+        }
+        
+        // Navegação do calendário
+        document.getElementById('prev-month').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        });
+        
+        document.getElementById('next-month').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        });
+        
+        document.getElementById('today-btn').addEventListener('click', function() {
+            currentDate = new Date();
+            generateCalendar();
+        });
+        
+        // Carregar tabela de pacientes para exportação
+        function loadExportPatientsTable() {
+            const tableBody = document.getElementById('export-patients-table');
+            tableBody.innerHTML = '';
+            
+            patients.forEach(patient => {
+                const clinicalRecord = clinicalRecords.find(record => record.patientId === patient.id);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td><input type="checkbox" class="patient-checkbox" value="${patient.id}"></td>
+                    <td>${patient.name}</td>
+                    <td>${clinicalRecord ? formatDate(clinicalRecord.updatedAt) : 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-outline export-patient-btn" data-id="${patient.id}" style="padding: 5px 10px; font-size: 0.9rem;">
+                            <i class="fas fa-file-pdf"></i> Exportar
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Evento para selecionar todos os pacientes
+            document.getElementById('select-all-patients').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.patient-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+            
+            // Evento para exportar paciente individual
+            document.querySelectorAll('.export-patient-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const patientId = this.getAttribute('data-id');
+                    exportPatientPDF(patientId);
+                });
+            });
+        }
+        
+        // Exportar PDF de paciente
+        function exportPatientPDF(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            const clinicalRecord = clinicalRecords.find(record => record.patientId === patientId);
+            
+            // Em um sistema real, aqui usaria uma biblioteca como jsPDF para gerar o PDF
+            // Por enquanto, apenas simularemos
+            alert(`Gerando PDF para ${patient.name}...\n\nEm um sistema real, isso geraria um PDF com todas as informações do paciente e sua ficha clínica.`);
+            
+            // Incrementar contador de PDFs
+            pdfCount++;
+            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            updateDashboardCounters();
+        }
+        
+        // Exportar pacientes selecionados
+        document.getElementById('export-selected-patients').addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('.patient-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('Selecione pelo menos um paciente para exportar.');
+                return;
+            }
+            
+            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+            alert(`Exportando ${selectedIds.length} fichas clínicas em PDF...\n\nEm um sistema real, isso geraria um PDF com múltiplas fichas ou um arquivo ZIP.`);
+            
+            // Incrementar contador de PDFs
+            pdfCount += selectedIds.length;
+            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            updateDashboardCounters();
+        });
+        
+        // Exportar todos os pacientes
+        document.getElementById('export-all-patients').addEventListener('click', function() {
+            if (patients.length === 0) {
+                alert('Não há pacientes cadastrados para exportar.');
+                return;
+            }
+            
+            alert(`Exportando todas as ${patients.length} fichas clínicas...\n\nEm um sistema real, isso geraria um arquivo ZIP com todos os PDFs.`);
+            
+            // Incrementar contador de PDFs
+            pdfCount += patients.length;
+            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            updateDashboardCounters();
+        });
+        
+        // Exportar agenda em PDF
+        document.getElementById('export-schedule-pdf').addEventListener('click', function() {
+            const startDate = document.getElementById('export-start-date').value;
+            const endDate = document.getElementById('export-end-date').value;
+            
+            if (!startDate || !endDate) {
+                alert('Por favor, selecione o período para exportar.');
+                return;
+            }
+            
+            alert(`Exportando agenda de ${startDate} a ${endDate} em PDF...\n\nEm um sistema real, isso geraria um PDF com a agenda do período selecionado.`);
+            
+            // Incrementar contador de PDFs
+            pdfCount++;
+            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            updateDashboardCounters();
+        });
+        
+        // Exportar agenda em CSV
+        document.getElementById('export-schedule-csv').addEventListener('click', function() {
+            const startDate = document.getElementById('export-start-date').value;
+            const endDate = document.getElementById('export-end-date').value;
+            
+            if (!startDate || !endDate) {
+                alert('Por favor, selecione o período para exportar.');
+                return;
+            }
+            
+            alert(`Exportando agenda de ${startDate} a ${endDate} em CSV...\n\nEm um sistema real, isso baixaria um arquivo CSV com os dados da agenda.`);
+        });
+        
+        // Adicionar nova consulta
+        document.getElementById('add-appointment').addEventListener('click', function() {
+            // Verificar se há pacientes cadastrados
+            if (patients.length === 0) {
+                alert('Cadastre pelo menos um paciente antes de agendar uma consulta.');
+                document.querySelector('a[data-tab="patient-registration"]').click();
+                return;
+            }
+            
+            // Em um sistema real, isso abriria um formulário de agendamento
+            // Por enquanto, vamos criar uma consulta de exemplo
+            const samplePatient = patients[0];
+            
+            const appointment = {
+                id: Date.now().toString(),
+                patientId: samplePatient.id,
+                date: new Date().toISOString().split('T')[0],
+                time: '14:30',
+                reason: 'Consulta de rotina',
+                notes: '',
+                status: 'confirmed',
+                createdAt: new Date().toISOString()
+            };
+            
+            appointments.push(appointment);
+            localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
+            
+            // Atualizar a ficha clínica do paciente
+            const clinicalRecord = clinicalRecords.find(record => record.patientId === samplePatient.id);
+            if (clinicalRecord) {
+                clinicalRecord.nextAppointment = appointment.date;
+                clinicalRecord.updatedAt = new Date().toISOString();
+                localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
+            }
+            
+            alert(`Consulta agendada para ${samplePatient.name} às ${appointment.time} do dia ${formatDate(appointment.date)}.`);
+            loadAppointmentsTable();
+            updateDashboardCounters();
+        });
+        
+        // Adicionar nova ficha clínica
+        document.getElementById('add-clinical-record').addEventListener('click', function() {
+            if (patients.length === 0) {
+                alert('Cadastre pelo menos um paciente antes de criar uma ficha clínica.');
+                document.querySelector('a[data-tab="patient-registration"]').click();
+                return;
+            }
+            
+            alert('Em um sistema real, isso abriria um formulário para criar uma nova ficha clínica.');
+        });
+        
+        // Exportar PDF de fichas clínicas
+        document.getElementById('export-clinical-pdf').addEventListener('click', function() {
+            if (clinicalRecords.length === 0) {
+                alert('Não há fichas clínicas para exportar.');
+                return;
+            }
+            
+            alert(`Exportando ${clinicalRecords.length} fichas clínicas em PDF...\n\nEm um sistema real, isso geraria um PDF com todas as fichas clínicas.`);
+            
+            // Incrementar contador de PDFs
+            pdfCount++;
+            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            updateDashboardCounters();
+        });
+        
+        // Funções utilitárias
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+        
+        // Inicializar dados de exemplo se não houver dados
+        function initializeSampleData() {
+            if (patients.length === 0) {
+                // Criar alguns pacientes de exemplo
+                const samplePatients = [
+                    {
+                        id: '1',
+                        name: 'Maria Silva Santos',
+                        cpf: '123.456.789-00',
+                        dob: '1985-05-15',
+                        phone: '(11) 98765-4321',
+                        email: 'maria.silva@email.com',
+                        gender: 'Feminino',
+                        address: 'Rua das Flores, 123, Apt 45',
+                        city: 'São Paulo',
+                        state: 'SP',
+                        allergies: 'Penicilina, Ibuprofeno',
+                        medications: 'Losartana 50mg, Metformina 850mg',
+                        history: 'Hipertensão arterial, Diabetes tipo 2',
+                        createdAt: '2024-01-15T10:30:00Z'
+                    },
+                    {
+                        id: '2',
+                        name: 'João Oliveira Costa',
+                        cpf: '987.654.321-00',
+                        dob: '1978-11-22',
+                        phone: '(11) 91234-5678',
+                        email: 'joao.costa@email.com',
+                        gender: 'Masculino',
+                        address: 'Av. Paulista, 1000, Conj 120',
+                        city: 'São Paulo',
+                        state: 'SP',
+                        allergies: 'Nenhuma conhecida',
+                        medications: 'Atorvastatina 20mg',
+                        history: 'Hipercolesterolemia',
+                        createdAt: '2024-01-20T14:15:00Z'
+                    },
+                    {
+                        id: '3',
+                        name: 'Ana Paula Rodrigues',
+                        cpf: '456.789.123-00',
+                        dob: '1992-03-08',
+                        phone: '(11) 99876-5432',
+                        email: 'ana.rodrigues@email.com',
+                        gender: 'Feminino',
+                        address: 'Rua Augusta, 500',
+                        city: 'São Paulo',
+                        state: 'SP',
+                        allergies: 'Dipirona',
+                        medications: 'Nenhuma',
+                        history: 'Enxaqueca crônica',
+                        createdAt: '2024-02-01T09:00:00Z'
+                    }
+                ];
+                
+                patients = samplePatients;
+                localStorage.setItem('medsystem_patients', JSON.stringify(patients));
+                
+                // Criar fichas clínicas de exemplo
+                const sampleClinicalRecords = [
+                    {
+                        id: '101',
+                        patientId: '1',
+                        patientName: 'Maria Silva Santos',
+                        lastAppointment: '2024-02-10T14:30:00Z',
+                        nextAppointment: '2024-03-15T14:30:00Z',
+                        condition: 'Hipertensão e Diabetes controlados',
+                        notes: 'Paciente com boa adesão ao tratamento. Pressão arterial 120x80. Glicemia em jejum 98mg/dL.',
+                        createdAt: '2024-01-15T10:30:00Z',
+                        updatedAt: '2024-02-10T15:45:00Z'
+                    },
+                    {
+                        id: '102',
+                        patientId: '2',
+                        patientName: 'João Oliveira Costa',
+                        lastAppointment: '2024-02-05T10:00:00Z',
+                        nextAppointment: '2024-05-05T10:00:00Z',
+                        condition: 'Colesterol em redução',
+                        notes: 'Colesterol total reduziu de 240 para 210. Manter dieta e exercícios.',
+                        createdAt: '2024-01-20T14:15:00Z',
+                        updatedAt: '2024-02-05T11:20:00Z'
+                    },
+                    {
+                        id: '103',
+                        patientId: '3',
+                        patientName: 'Ana Paula Rodrigues',
+                        lastAppointment: '2024-02-12T16:00:00Z',
+                        nextAppointment: '2024-04-12T16:00:00Z',
+                        condition: 'Enxaqueca em investigação',
+                        notes: 'Iniciado tratamento profilático. Agendar retorno em 60 dias.',
+                        createdAt: '2024-02-01T09:00:00Z',
+                        updatedAt: '2024-02-12T17:10:00Z'
+                    }
+                ];
+                
+                clinicalRecords = sampleClinicalRecords;
+                localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
+                
+                // Criar agendamentos de exemplo
+                const today = new Date();
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                const sampleAppointments = [
+                    {
+                        id: '201',
+                        patientId: '1',
+                        date: today.toISOString().split('T')[0],
+                        time: '14:30',
+                        reason: 'Acompanhamento hipertensão',
+                        notes: 'Verificar pressão arterial e ajustar medicação se necessário',
+                        status: 'confirmed',
+                        createdAt: '2024-02-01T08:00:00Z'
+                    },
+                    {
+                        id: '202',
+                        patientId: '3',
+                        date: today.toISOString().split('T')[0],
+                        time: '16:00',
+                        reason: 'Retorno enxaqueca',
+                        notes: 'Avaliar eficácia do tratamento',
+                        status: 'completed',
+                        createdAt: '2024-01-28T14:30:00Z'
+                    },
+                    {
+                        id: '203',
+                        patientId: '2',
+                        date: tomorrow.toISOString().split('T')[0],
+                        time: '10:00',
+                        reason: 'Exames de colesterol',
+                        notes: 'Coleta de sangue para perfil lipídico',
+                        status: 'confirmed',
+                        createdAt: '2024-02-05T11:20:00Z'
+                    }
+                ];
+                
+                appointments = sampleAppointments;
+                localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
+                
+                // Inicializar contador de PDFs
+                pdfCount = 3;
+                localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
+            }
+        }
+        
+        // Inicializar o sistema
+        initializeSampleData();
+        updateDashboardCounters();
+        generateCalendar();
+        
+        // Inicializar datepickers
+        flatpickr("#patient-dob", {
+            dateFormat: "Y-m-d",
+            maxDate: "today"
+        });
+        
+        flatpickr("#export-start-date, #export-end-date", {
+            dateFormat: "Y-m-d"
+        });
+        
+        // Adicionar evento para o botão de nova consulta no dashboard
+        document.querySelector('button[data-tab="appointment-schedule"]').addEventListener('click', function() {
+            document.getElementById('add-appointment').click();
+        });
+    </script>
+</body>
+</html>
