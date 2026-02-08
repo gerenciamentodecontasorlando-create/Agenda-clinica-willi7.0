@@ -1,1824 +1,1708 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão - Consultório Médico</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #1abc9c;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --gray-color: #95a5a6;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-
-        .logo {
-            text-align: center;
-            padding: 20px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .logo span {
-            color: var(--accent-color);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-menu li {
-            padding: 0;
-        }
-
-        .nav-menu a {
-            display: flex;
-            align-items: center;
-            padding: 15px 25px;
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            border-left: 4px solid transparent;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: var(--accent-color);
-        }
-
-        .nav-menu i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-            font-size: 1.2rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .header h2 {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* Dashboard Cards */
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .card i {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: var(--secondary-color);
-        }
-
-        .card h3 {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .card p {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--dark-color);
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background-color: white;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 0;
-        }
-
-        .tab {
-            padding: 15px 25px;
-            background-color: #f8f9fa;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
-            color: var(--primary-color);
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab:hover {
-            background-color: #e9ecef;
-        }
-
-        .tab.active {
-            background-color: white;
-            border-bottom-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        /* Content Panels */
-        .content-panel {
-            background-color: white;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-            display: none;
-        }
-
-        .content-panel.active {
-            display: block;
-        }
-
-        /* Form Styles */
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .form-section h3 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-
-        .btn-success {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #16a085;
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table thead {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        table th, table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table tbody tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        table .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            padding: 5px;
-            border-radius: 4px;
-            transition: var(--transition);
-        }
-
-        .edit-btn {
-            color: var(--secondary-color);
-        }
-
-        .edit-btn:hover {
-            background-color: rgba(52, 152, 219, 0.1);
-        }
-
-        .delete-btn {
-            color: var(--danger-color);
-        }
-
-        .delete-btn:hover {
-            background-color: rgba(231, 76, 60, 0.1);
-        }
-
-        /* Calendar Styles */
-        #calendar-container {
-            margin-top: 20px;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .calendar-nav {
-            display: flex;
-            gap: 10px;
-        }
-
-        .calendar-weekdays, .calendar-days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background-color: #ddd;
-            border: 1px solid #ddd;
-        }
-
-        .calendar-weekdays div {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .calendar-days div {
-            background-color: white;
-            padding: 15px;
-            min-height: 120px;
-            overflow-y: auto;
-        }
-
-        .calendar-day.empty {
-            background-color: #f9f9f9;
-        }
-
-        .calendar-day.today {
-            background-color: rgba(52, 152, 219, 0.1);
-            border: 2px solid var(--secondary-color);
-        }
-
-        .calendar-event {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 5px 8px;
-            border-radius: 4px;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
-        .calendar-event:hover {
-            opacity: 0.9;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            color: var(--primary-color);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray-color);
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray-color);
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            margin-top: 30px;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                padding: 10px 0;
-            }
-            
-            .nav-menu {
-                display: flex;
-                justify-content: space-around;
-                flex-wrap: wrap;
-            }
-            
-            .nav-menu a {
-                border-left: none;
-                border-bottom: 4px solid transparent;
-                padding: 10px 15px;
-            }
-            
-            .nav-menu a:hover, .nav-menu a.active {
-                border-left-color: transparent;
-                border-bottom-color: var(--accent-color);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-cards {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .calendar-days div {
-                min-height: 80px;
-                padding: 10px 5px;
-            }
-            
-            .calendar-event {
-                font-size: 0.7rem;
-                padding: 3px 5px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .tabs {
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                flex: 1;
-                min-width: 120px;
-                text-align: center;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BTX Docs • Gerador de Documentos Clínicos</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#0b1220;
+      --muted:#5a6b84;
+      --line:#d6deea;
+      --accent:#2a63ff;
+      --accent2:#00c2ff;
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --shadow: 0 10px 30px rgba(11,18,32,.08);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(42,99,255,.10), transparent 55%),
+                  radial-gradient(900px 700px at 80% 0%, rgba(0,194,255,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+    .topbar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.75);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      position:sticky; top:10px; z-index:20;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 12px 22px rgba(42,99,255,.25);
+      position:relative;
+    }
+    .logo:after{
+      content:""; position:absolute; inset:9px;
+      border-radius:10px; border:1px solid rgba(255,255,255,.55);
+    }
+    .brand h1{font-size:14px;margin:0;line-height:1.1}
+    .brand p{margin:0;color:var(--muted);font-size:12px}
+    .actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    button, .btn{
+      border:1px solid var(--line);
+      background: #fff;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 8px 18px rgba(11,18,32,.06);
+      font-weight: 600;
+      font-size: 12px;
+      transition:.15s transform, .15s box-shadow, .15s border-color;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    button:hover{transform: translateY(-1px); box-shadow: 0 14px 24px rgba(11,18,32,.09); border-color:#c7d2e4;}
+    button.primary{
+      border-color: rgba(42,99,255,.35);
+      background: linear-gradient(135deg, rgba(42,99,255,.12), rgba(0,194,255,.10));
+    }
+    button.danger{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.06);}
+    button.ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.06);}
+    .grid{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+      .topbar{position:relative; top:0}
+    }
+    .side, .main{
+      background:rgba(255,255,255,.70);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHead{
+      padding:14px 14px 10px 14px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(42,99,255,.06), transparent);
+    }
+    .panelHead h2{
+      margin:0; font-size:13px; letter-spacing:.2px;
+    }
+    .panelHead p{margin:6px 0 0 0; font-size:12px; color:var(--muted)}
+    .panelBody{padding:12px 14px 14px 14px}
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,255,255,.65);
+    }
+    .tab{
+      padding:9px 10px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+      display:inline-flex; gap:8px; align-items:center;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color: rgba(42,99,255,.35);
+      background: linear-gradient(135deg, rgba(42,99,255,.12), rgba(0,194,255,.10));
+    }
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 700px){ .row{grid-template-columns: 1fr;} }
+    label{display:block; font-size:11px; color:var(--muted); margin:0 0 6px 2px; font-weight:700}
+    input, select, textarea{
+      width:100%;
+      padding:10px 11px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      outline:none;
+      background:#fff;
+      color:var(--text);
+      font-size:13px;
+      box-shadow: 0 8px 16px rgba(11,18,32,.05) inset;
+    }
+    textarea{min-height: 92px; resize: vertical; line-height:1.35}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(42,99,255,.55);
+      box-shadow: 0 0 0 4px rgba(42,99,255,.12);
+    }
+    .hint{
+      font-size:11px; color:var(--muted); margin-top:6px; line-height:1.25
+    }
+    .mini{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    }
+    .chip{
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .chip.ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.08); color:#126b33}
+    .chip.warn{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color:#8a5a04}
+    .chip.bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.10); color:#8b1f1f}
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding:12px;
+      box-shadow: 0 10px 22px rgba(11,18,32,.06);
+    }
+    .card h3{margin:0 0 6px 0; font-size:13px}
+    .card p{margin:0; font-size:12px; color:var(--muted); line-height:1.25}
+    .card .meta{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
+    .split{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    }
+    @media (max-width: 850px){ .split{grid-template-columns: 1fr;} }
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .rightTools{
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding:3px 6px;
+      border:1px solid var(--line);
+      border-bottom-width:2px;
+      border-radius: 8px;
+      background:#fff;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .small{font-size:11px;color:var(--muted)}
+    .dangerText{color:#8b1f1f;font-weight:800}
+    .muted{color:var(--muted)}
+    .titleLine{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+    }
+    .titleLine h2{margin:0;font-size:14px}
+    .titleLine .small{margin:0}
+    .empty{
+      padding:16px;
+      border:1px dashed var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.6);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.25;
+    }
+
+    /* ---------- PRINT / DOCUMENT TEMPLATE ---------- */
+    .printOverlay{
+      position:fixed; inset:0; background: rgba(11,18,32,.55);
+      display:none; align-items:center; justify-content:center; padding:18px;
+      z-index:50;
+    }
+    .printOverlay.show{display:flex}
+    .printShell{
+      width:min(920px, 98vw);
+      height:min(92vh, 980px);
+      background:#fff;
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 30px 70px rgba(0,0,0,.35);
+      display:flex; flex-direction:column;
+    }
+    .printTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(42,99,255,.10), rgba(0,194,255,.08));
+    }
+    .printTop strong{font-size:12px}
+    .printTop .muted{font-size:11px}
+    .printBody{
+      padding:16px;
+      overflow:auto;
+      background: #f3f6fb;
+    }
+    .docPage{
+      width: 794px; /* ~A4 at 96dpi-ish */
+      min-height: 1123px;
+      margin: 0 auto;
+      background:#fff;
+      border-radius: 14px;
+      border: 2px solid #111827; /* borda elegante e firme */
+      box-shadow: 0 12px 30px rgba(11,18,32,.12);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+    .docHeader{
+      padding:14px 16px 10px 16px;
+      border-bottom: 1px solid #111827;
+      background: linear-gradient(180deg, rgba(42,99,255,.09), rgba(0,194,255,.06));
+    }
+    .docHeader .topRow{
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    }
+    .docHeader .dent{
+      font-weight:900; font-size:14px;
+      letter-spacing:.2px;
+    }
+    .docHeader .dent small{
+      display:block; font-weight:700; color:#334155; margin-top:4px; font-size:11px;
+    }
+    .docHeader .stamp{
+      font-family: var(--mono);
+      font-size: 11px;
+      border:1px solid rgba(17,24,39,.35);
+      padding:6px 10px;
+      border-radius: 12px;
+      color:#0b1220;
+      background: rgba(255,255,255,.75);
+      text-align:right;
+      min-width: 220px;
+    }
+    .docHeader .pat{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(17,24,39,.25);
+      background: rgba(255,255,255,.8);
+      display:grid;
+      grid-template-columns: 1.4fr .9fr .9fr;
+      gap:10px;
+      font-size:12px;
+    }
+    .docHeader .pat div b{display:block; font-size:11px; color:#334155}
+    .docMain{
+      padding:16px;
+      flex:1;
+    }
+    .docMain h3{
+      margin:0 0 10px 0;
+      font-size:16px;
+      letter-spacing:.3px;
+    }
+    .docMain .block{
+      border:1px solid rgba(17,24,39,.22);
+      border-radius: 12px;
+      padding:12px;
+      margin: 10px 0;
+    }
+    .docMain .block h4{margin:0 0 8px 0; font-size:12px; color:#0b1220}
+    .docMain .block p{margin:0; font-size:12px; color:#0b1220; line-height:1.35; white-space:pre-wrap}
+    .docFooter{
+      padding:12px 16px;
+      border-top: 1px solid #111827;
+      background: rgba(248,250,252,.9);
+    }
+    .docFooter .footGrid{
+      display:grid;
+      grid-template-columns: 1.4fr .6fr;
+      gap:12px;
+      align-items:end;
+    }
+    .docFooter .addr{
+      font-size:11px; color:#0b1220; line-height:1.25;
+    }
+    .sig{
+      text-align:right;
+      font-size:11px;
+      color:#0b1220;
+    }
+    .sig .line{
+      height:1px; background:#0b1220; margin:18px 0 6px 0;
+    }
+
+    /* Print styling */
+    @media print{
+      body{background:#fff}
+      .topbar,.side,.tabs,.main .panelHead,.main .panelBody:not(.printable), .printOverlay{display:none !important;}
+      .printArea{display:block !important;}
+      .docPage{
+        width:auto; min-height:auto;
+        border-radius: 0;
+        box-shadow:none;
+        page-break-after: always;
+      }
+      @page{
+        size: A4;
+        margin: 10mm;
+      }
+    }
+    .printArea{display:none;}
+    .toast{
+      position:fixed; right:14px; bottom:14px;
+      background:#0b1220;
+      color:#fff;
+      padding:10px 12px;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+      font-size:12px;
+      display:none;
+      z-index:60;
+      max-width: min(420px, 92vw);
+    }
+    .toast.show{display:block}
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <h1>Med<span>System</span></h1>
-                <p>Sistema de Gestão Médica</p>
-            </div>
-            
-            <ul class="nav-menu">
-                <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#" data-tab="patient-registration"><i class="fas fa-user-plus"></i> Cadastrar Paciente</a></li>
-                <li><a href="#" data-tab="clinical-records"><i class="fas fa-notes-medical"></i> Fichas Clínicas</a></li>
-                <li><a href="#" data-tab="appointment-schedule"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                <li><a href="#" data-tab="calendar-view"><i class="fas fa-calendar-day"></i> Calendário</a></li>
-                <li><a href="#" data-tab="export-data"><i class="fas fa-file-export"></i> Exportar Dados</a></li>
-            </ul>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>BTX Docs • Gerador Clínico</h1>
+          <p>Agenda + documentos com memória offline • layout claro & tecnológico</p>
         </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <h2 id="page-title">Dashboard</h2>
-                <div class="user-info">
-                    <div class="user-avatar">DR</div>
-                    <div>
-                        <p style="font-weight: 600;">Dr. Médico</p>
-                        <p style="font-size: 0.9rem; color: var(--gray-color);">Consultório</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dashboard Cards -->
-            <div id="dashboard" class="content-panel active">
-                <div class="dashboard-cards">
-                    <div class="card" data-tab="clinical-records">
-                        <i class="fas fa-notes-medical"></i>
-                        <h3>Fichas Clínicas</h3>
-                        <p id="patient-count">0</p>
-                    </div>
-                    <div class="card" data-tab="appointment-schedule">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3>Consultas Hoje</h3>
-                        <p id="today-appointments">0</p>
-                    </div>
-                    <div class="card" data-tab="calendar-view">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h3>Próximos 7 Dias</h3>
-                        <p id="week-appointments">0</p>
-                    </div>
-                    <div class="card" data-tab="export-data">
-                        <i class="fas fa-file-pdf"></i>
-                        <h3>PDFs Gerados</h3>
-                        <p id="pdf-count">0</p>
-                    </div>
-                </div>
-                
-                <div style="background-color: white; border-radius: var(--border-radius); padding: 25px; box-shadow: var(--box-shadow); margin-top: 30px;">
-                    <h3 style="color: var(--primary-color); margin-bottom: 20px;">Atalhos Rápidos</h3>
-                    <div class="button-group">
-                        <button class="btn btn-primary" data-tab="patient-registration">
-                            <i class="fas fa-user-plus"></i> Novo Paciente
-                        </button>
-                        <button class="btn btn-success" data-tab="appointment-schedule">
-                            <i class="fas fa-plus-circle"></i> Nova Consulta
-                        </button>
-                        <button class="btn btn-outline" data-tab="export-data">
-                            <i class="fas fa-file-export"></i> Exportar Dados
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Patient Registration Form -->
-            <div id="patient-registration" class="content-panel">
-                <h2 style="color: var(--primary-color); margin-bottom: 25px;">Cadastro de Paciente</h2>
-                
-                <div class="form-section">
-                    <h3>Informações Pessoais</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="patient-name">Nome Completo *</label>
-                            <input type="text" id="patient-name" placeholder="Digite o nome completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-cpf">CPF</label>
-                            <input type="text" id="patient-cpf" placeholder="000.000.000-00">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-dob">Data de Nascimento</label>
-                            <input type="date" id="patient-dob">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="patient-phone">Telefone</label>
-                            <input type="text" id="patient-phone" placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-email">E-mail</label>
-                            <input type="email" id="patient-email" placeholder="paciente@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-gender">Sexo</label>
-                            <select id="patient-gender">
-                                <option value="">Selecione</option>
-                                <option value="Masculino">Masculino</option>
-                                <option value="Feminino">Feminino</option>
-                                <option value="Outro">Outro</option>
-                                <option value="Prefiro não informar">Prefiro não informar</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>Endereço</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="patient-address">Endereço</label>
-                            <input type="text" id="patient-address" placeholder="Rua, número, complemento">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-city">Cidade</label>
-                            <input type="text" id="patient-city" placeholder="Cidade">
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-state">Estado</label>
-                            <select id="patient-state">
-                                <option value="">Selecione</option>
-                                <option value="AC">Acre</option>
-                                <option value="AL">Alagoas</option>
-                                <option value="AP">Amapá</option>
-                                <option value="AM">Amazonas</option>
-                                <option value="BA">Bahia</option>
-                                <option value="CE">Ceará</option>
-                                <option value="DF">Distrito Federal</option>
-                                <option value="ES">Espírito Santo</option>
-                                <option value="GO">Goiás</option>
-                                <option value="MA">Maranhão</option>
-                                <option value="MT">Mato Grosso</option>
-                                <option value="MS">Mato Grosso do Sul</option>
-                                <option value="MG">Minas Gerais</option>
-                                <option value="PA">Pará</option>
-                                <option value="PB">Paraíba</option>
-                                <option value="PR">Paraná</option>
-                                <option value="PE">Pernambuco</option>
-                                <option value="PI">Piauí</option>
-                                <option value="RJ">Rio de Janeiro</option>
-                                <option value="RN">Rio Grande do Norte</option>
-                                <option value="RS">Rio Grande do Sul</option>
-                                <option value="RO">Rondônia</option>
-                                <option value="RR">Roraima</option>
-                                <option value="SC">Santa Catarina</option>
-                                <option value="SP">São Paulo</option>
-                                <option value="SE">Sergipe</option>
-                                <option value="TO">Tocantins</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>Informações Médicas</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="patient-allergies">Alergias</label>
-                            <textarea id="patient-allergies" placeholder="Liste as alergias do paciente"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="patient-medications">Medicações em Uso</label>
-                            <textarea id="patient-medications" placeholder="Liste as medicações em uso"></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="patient-history">Histórico Médico</label>
-                            <textarea id="patient-history" placeholder="Descreva o histórico médico do paciente"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button class="btn btn-success" id="save-patient">
-                        <i class="fas fa-save"></i> Salvar Paciente
-                    </button>
-                    <button class="btn btn-outline" id="clear-form">
-                        <i class="fas fa-eraser"></i> Limpar Formulário
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Clinical Records -->
-            <div id="clinical-records" class="content-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h2 style="color: var(--primary-color);">Fichas Clínicas</h2>
-                    <div class="button-group">
-                        <button class="btn btn-primary" id="add-clinical-record">
-                            <i class="fas fa-plus"></i> Nova Ficha
-                        </button>
-                        <button class="btn btn-outline" id="export-clinical-pdf">
-                            <i class="fas fa-file-pdf"></i> Exportar PDF
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table id="clinical-table">
-                        <thead>
-                            <tr>
-                                <th>Paciente</th>
-                                <th>Última Consulta</th>
-                                <th>Próxima Consulta</th>
-                                <th>Condição</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clinical-table-body">
-                            <!-- Dados serão inseridos via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Appointment Schedule -->
-            <div id="appointment-schedule" class="content-panel">
-                <div class="tabs" id="schedule-tabs">
-                    <div class="tab active" data-schedule-tab="today">Hoje</div>
-                    <div class="tab" data-schedule-tab="tomorrow">Amanhã</div>
-                    <div class="tab" data-schedule-tab="week">Esta Semana</div>
-                    <div class="tab" data-schedule-tab="all">Todos os Agendamentos</div>
-                </div>
-                
-                <div id="schedule-today" class="schedule-panel" style="display: block;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 25px 0;">
-                        <h3 style="color: var(--primary-color);">Consultas de Hoje</h3>
-                        <button class="btn btn-success" id="add-appointment">
-                            <i class="fas fa-plus-circle"></i> Nova Consulta
-                        </button>
-                    </div>
-                    
-                    <div class="table-container">
-                        <table id="appointment-table">
-                            <thead>
-                                <tr>
-                                    <th>Horário</th>
-                                    <th>Paciente</th>
-                                    <th>Motivo</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="appointment-table-body">
-                                <!-- Dados serão inseridos via JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Calendar View -->
-            <div id="calendar-view" class="content-panel">
-                <div class="calendar-header">
-                    <h2 style="color: var(--primary-color);" id="calendar-month">Fevereiro 2024</h2>
-                    <div class="calendar-nav">
-                        <button class="btn btn-outline" id="prev-month">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="btn btn-primary" id="today-btn">Hoje</button>
-                        <button class="btn btn-outline" id="next-month">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="calendar-container">
-                    <div class="calendar-weekdays">
-                        <div>Dom</div>
-                        <div>Seg</div>
-                        <div>Ter</div>
-                        <div>Qua</div>
-                        <div>Qui</div>
-                        <div>Sex</div>
-                        <div>Sáb</div>
-                    </div>
-                    <div class="calendar-days" id="calendar-days">
-                        <!-- Dias serão gerados via JavaScript -->
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Legenda</h3>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 20px; height: 20px; background-color: var(--accent-color); border-radius: 4px;"></div>
-                            <span>Consulta Marcada</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 20px; height: 20px; background-color: var(--secondary-color); border-radius: 4px;"></div>
-                            <span>Consulta Realizada</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 20px; height: 20px; background-color: var(--danger-color); border-radius: 4px;"></div>
-                            <span>Consulta Cancelada</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Export Data -->
-            <div id="export-data" class="content-panel">
-                <h2 style="color: var(--primary-color); margin-bottom: 25px;">Exportar Dados</h2>
-                
-                <div class="form-section">
-                    <h3>Exportar Fichas Clínicas</h3>
-                    <p style="margin-bottom: 20px;">Selecione os pacientes para exportar as fichas clínicas em formato PDF.</p>
-                    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 40px;"><input type="checkbox" id="select-all-patients"></th>
-                                    <th>Paciente</th>
-                                    <th>Última Atualização</th>
-                                    <th>Exportar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="export-patients-table">
-                                <!-- Dados serão inseridos via JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="button-group" style="margin-top: 20px;">
-                        <button class="btn btn-success" id="export-selected-patients">
-                            <i class="fas fa-file-pdf"></i> Exportar Fichas Selecionadas
-                        </button>
-                        <button class="btn btn-primary" id="export-all-patients">
-                            <i class="fas fa-file-archive"></i> Exportar Todas as Fichas
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>Exportar Agenda</h3>
-                    <p style="margin-bottom: 20px;">Selecione o período para exportar os agendamentos.</p>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="export-start-date">Data Inicial</label>
-                            <input type="date" id="export-start-date">
-                        </div>
-                        <div class="form-group">
-                            <label for="export-end-date">Data Final</label>
-                            <input type="date" id="export-end-date">
-                        </div>
-                    </div>
-                    
-                    <div class="button-group">
-                        <button class="btn btn-success" id="export-schedule-pdf">
-                            <i class="fas fa-file-pdf"></i> Exportar Agenda em PDF
-                        </button>
-                        <button class="btn btn-primary" id="export-schedule-csv">
-                            <i class="fas fa-file-csv"></i> Exportar Agenda em CSV
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="footer">
-                <p>MedSystem - Sistema de Gestão para Consultório © 2024 | Todos os direitos reservados</p>
-                <p>Este sistema armazena dados localmente no seu navegador. Para backup seguro, exporte regularmente os dados.</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal for Appointment Details -->
-    <div class="modal" id="appointment-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detalhes da Consulta</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="appointment-modal-content">
-                    <!-- Conteúdo será preenchido via JavaScript -->
-                </div>
-            </div>
-        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="btnBackup">📦 Exportar backup</button>
+        <label class="btn" style="cursor:pointer">
+          📥 Importar backup
+          <input type="file" id="backupFile" accept="application/json" style="display:none">
+        </label>
+        <button class="ok" id="btnQuickPrint">🖨️ Imprimir/Salvar PDF</button>
+        <button class="danger" id="btnReset">🧨 Zerar tudo</button>
+      </div>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    
-    <script>
-        // Dados iniciais (simulando banco de dados local)
-        let patients = JSON.parse(localStorage.getItem('medsystem_patients')) || [];
-        let appointments = JSON.parse(localStorage.getItem('medsystem_appointments')) || [];
-        let clinicalRecords = JSON.parse(localStorage.getItem('medsystem_clinical_records')) || [];
-        let pdfCount = parseInt(localStorage.getItem('medsystem_pdf_count')) || 0;
-        
-        // Elementos da interface
-        const pageTitle = document.getElementById('page-title');
-        const patientCount = document.getElementById('patient-count');
-        const todayAppointments = document.getElementById('today-appointments');
-        const weekAppointments = document.getElementById('week-appointments');
-        const pdfCountElement = document.getElementById('pdf-count');
-        
-        // Atualizar contadores do dashboard
-        function updateDashboardCounters() {
-            patientCount.textContent = patients.length;
-            
-            const today = new Date().toISOString().split('T')[0];
-            const todayApps = appointments.filter(app => app.date === today).length;
-            todayAppointments.textContent = todayApps;
-            
-            // Próximos 7 dias
-            const nextWeek = new Date();
-            nextWeek.setDate(nextWeek.getDate() + 7);
-            const weekApps = appointments.filter(app => {
-                const appDate = new Date(app.date);
-                const today = new Date();
-                return appDate >= today && appDate <= nextWeek;
-            }).length;
-            weekAppointments.textContent = weekApps;
-            
-            pdfCountElement.textContent = pdfCount;
-        }
-        
-        // Navegação entre abas
-        document.querySelectorAll('.nav-menu a, .card[data-tab], .btn[data-tab]').forEach(element => {
-            element.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const tabId = this.getAttribute('data-tab');
-                
-                // Atualizar menu ativo
-                document.querySelectorAll('.nav-menu a').forEach(link => {
-                    link.classList.remove('active');
-                });
-                
-                if (this.classList.contains('nav-menu')) {
-                    this.classList.add('active');
-                } else {
-                    // Encontrar o link correspondente no menu
-                    const menuLink = document.querySelector(`.nav-menu a[data-tab="${tabId}"]`);
-                    if (menuLink) {
-                        menuLink.classList.add('active');
-                    }
-                }
-                
-                // Mostrar aba correspondente
-                document.querySelectorAll('.content-panel').forEach(panel => {
-                    panel.classList.remove('active');
-                });
-                
-                document.getElementById(tabId).classList.add('active');
-                pageTitle.textContent = document.querySelector(`.nav-menu a[data-tab="${tabId}"]`).textContent.trim();
-                
-                // Atualizar dados se necessário
-                if (tabId === 'clinical-records') {
-                    loadClinicalRecordsTable();
-                } else if (tabId === 'appointment-schedule') {
-                    loadAppointmentsTable();
-                } else if (tabId === 'calendar-view') {
-                    generateCalendar();
-                } else if (tabId === 'export-data') {
-                    loadExportPatientsTable();
-                }
-                
-                updateDashboardCounters();
-            });
-        });
-        
-        // Abas da agenda
-        document.querySelectorAll('.tab[data-schedule-tab]').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Aqui você pode implementar a lógica para carregar diferentes visões da agenda
-                const scheduleTab = this.getAttribute('data-schedule-tab');
-                // Por enquanto, vamos apenas mostrar uma mensagem
-                loadAppointmentsTable(scheduleTab);
-            });
-        });
-        
-        // Salvar paciente
-        document.getElementById('save-patient').addEventListener('click', function() {
-            const patient = {
-                id: Date.now().toString(),
-                name: document.getElementById('patient-name').value,
-                cpf: document.getElementById('patient-cpf').value,
-                dob: document.getElementById('patient-dob').value,
-                phone: document.getElementById('patient-phone').value,
-                email: document.getElementById('patient-email').value,
-                gender: document.getElementById('patient-gender').value,
-                address: document.getElementById('patient-address').value,
-                city: document.getElementById('patient-city').value,
-                state: document.getElementById('patient-state').value,
-                allergies: document.getElementById('patient-allergies').value,
-                medications: document.getElementById('patient-medications').value,
-                history: document.getElementById('patient-history').value,
-                createdAt: new Date().toISOString()
-            };
-            
-            if (!patient.name) {
-                alert('Por favor, preencha o nome do paciente.');
-                return;
-            }
-            
-            patients.push(patient);
-            localStorage.setItem('medsystem_patients', JSON.stringify(patients));
-            
-            // Criar uma ficha clínica inicial para o paciente
-            const clinicalRecord = {
-                id: Date.now().toString(),
-                patientId: patient.id,
-                patientName: patient.name,
-                lastAppointment: null,
-                nextAppointment: null,
-                condition: 'Aguardando primeira consulta',
-                notes: '',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            
-            clinicalRecords.push(clinicalRecord);
-            localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
-            
-            alert('Paciente cadastrado com sucesso!');
-            document.getElementById('clear-form').click();
-            updateDashboardCounters();
-        });
-        
-        // Limpar formulário
-        document.getElementById('clear-form').addEventListener('click', function() {
-            document.querySelectorAll('#patient-registration input, #patient-registration select, #patient-registration textarea').forEach(element => {
-                if (element.type !== 'button') {
-                    element.value = '';
-                }
-            });
-        });
-        
-        // Carregar tabela de fichas clínicas
-        function loadClinicalRecordsTable() {
-            const tableBody = document.getElementById('clinical-table-body');
-            tableBody.innerHTML = '';
-            
-            clinicalRecords.forEach(record => {
-                const patient = patients.find(p => p.id === record.patientId);
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${record.patientName}</td>
-                    <td>${record.lastAppointment ? formatDate(record.lastAppointment) : 'N/A'}</td>
-                    <td>${record.nextAppointment ? formatDate(record.nextAppointment) : 'N/A'}</td>
-                    <td>${record.condition}</td>
-                    <td class="actions">
-                        <button class="action-btn edit-btn" data-id="${record.id}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete-btn" data-id="${record.id}" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="action-btn" style="color: var(--accent-color);" data-id="${record.id}" title="Visualizar">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Adicionar eventos aos botões
-            document.querySelectorAll('#clinical-table-body .edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const recordId = this.getAttribute('data-id');
-                    editClinicalRecord(recordId);
-                });
-            });
-            
-            document.querySelectorAll('#clinical-table-body .delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const recordId = this.getAttribute('data-id');
-                    if (confirm('Tem certeza que deseja excluir esta ficha clínica?')) {
-                        deleteClinicalRecord(recordId);
-                    }
-                });
-            });
-        }
-        
-        // Funções para fichas clínicas
-        function editClinicalRecord(id) {
-            alert(`Editar ficha clínica ${id} - Em um sistema real, isso abriria um formulário de edição.`);
-        }
-        
-        function deleteClinicalRecord(id) {
-            clinicalRecords = clinicalRecords.filter(record => record.id !== id);
-            localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
-            loadClinicalRecordsTable();
-            updateDashboardCounters();
-        }
-        
-        // Carregar tabela de consultas
-        function loadAppointmentsTable(filter = 'today') {
-            const tableBody = document.getElementById('appointment-table-body');
-            tableBody.innerHTML = '';
-            
-            let filteredAppointments = [...appointments];
-            
-            // Aplicar filtro
-            if (filter === 'today') {
-                const today = new Date().toISOString().split('T')[0];
-                filteredAppointments = appointments.filter(app => app.date === today);
-            } else if (filter === 'tomorrow') {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const tomorrowStr = tomorrow.toISOString().split('T')[0];
-                filteredAppointments = appointments.filter(app => app.date === tomorrowStr);
-            } else if (filter === 'week') {
-                const nextWeek = new Date();
-                nextWeek.setDate(nextWeek.getDate() + 7);
-                filteredAppointments = appointments.filter(app => {
-                    const appDate = new Date(app.date);
-                    const today = new Date();
-                    return appDate >= today && appDate <= nextWeek;
-                });
-            }
-            
-            // Ordenar por horário
-            filteredAppointments.sort((a, b) => a.time.localeCompare(b.time));
-            
-            filteredAppointments.forEach(appointment => {
-                const patient = patients.find(p => p.id === appointment.patientId);
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${appointment.time}</td>
-                    <td>${patient ? patient.name : 'Paciente não encontrado'}</td>
-                    <td>${appointment.reason}</td>
-                    <td>
-                        <span class="status-badge" style="
-                            background-color: ${appointment.status === 'confirmed' ? 'var(--accent-color)' : 
-                                            appointment.status === 'completed' ? 'var(--secondary-color)' : 
-                                            appointment.status === 'cancelled' ? 'var(--danger-color)' : 'var(--warning-color)'};
-                            color: white;
-                            padding: 5px 10px;
-                            border-radius: 20px;
-                            font-size: 0.85rem;
-                        ">
-                            ${appointment.status === 'confirmed' ? 'Confirmada' : 
-                             appointment.status === 'completed' ? 'Realizada' : 
-                             appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente'}
-                        </span>
-                    </td>
-                    <td class="actions">
-                        <button class="action-btn edit-btn" data-id="${appointment.id}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete-btn" data-id="${appointment.id}" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="action-btn view-appointment-btn" data-id="${appointment.id}" title="Visualizar" style="color: var(--accent-color);">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Adicionar eventos aos botões de visualização
-            document.querySelectorAll('.view-appointment-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const appointmentId = this.getAttribute('data-id');
-                    showAppointmentDetails(appointmentId);
-                });
-            });
-        }
-        
-        // Mostrar detalhes da consulta em modal
-        function showAppointmentDetails(appointmentId) {
-            const appointment = appointments.find(a => a.id === appointmentId);
-            if (!appointment) return;
-            
-            const patient = patients.find(p => p.id === appointment.patientId);
-            const modalContent = document.getElementById('appointment-modal-content');
-            
-            modalContent.innerHTML = `
-                <div class="form-group">
-                    <label>Paciente:</label>
-                    <p style="font-weight: 600; font-size: 1.1rem;">${patient ? patient.name : 'N/A'}</p>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Data:</label>
-                        <p>${formatDate(appointment.date)}</p>
+    <div class="grid">
+      <!-- LEFT: Config + Biblioteca -->
+      <aside class="side">
+        <div class="panelHead">
+          <h2>Configuração do profissional</h2>
+          <p>Esses dados vão automaticamente para todos os documentos.</p>
+        </div>
+        <div class="panelBody">
+          <div class="row">
+            <div>
+              <label>Nome do dentista</label>
+              <input id="dentName" placeholder="Ex.: Dr. Orlando Abreu" />
+            </div>
+            <div>
+              <label>Registro (CRO/UF)</label>
+              <input id="dentReg" placeholder="Ex.: CRO-PA 00000" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>Telefone/WhatsApp</label>
+              <input id="dentPhone" placeholder="(xx) xxxxx-xxxx" />
+            </div>
+            <div>
+              <label>E-mail</label>
+              <input id="dentEmail" placeholder="seuemail@..." />
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Endereço (rodapé do documento)</label>
+            <textarea id="dentAddr" placeholder="Rua, nº, bairro, cidade/UF, CEP."></textarea>
+            <div class="hint">Dica: coloque também redes/website se quiser. Vai no rodapé.</div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="titleLine">
+            <h2>Receituário inteligente</h2>
+            <p class="small">Biblioteca de medicamentos</p>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>Medicamento (nome)</label>
+              <input id="medName" placeholder="Ex.: Amoxicilina 500mg" />
+            </div>
+            <div>
+              <label>Forma / via</label>
+              <input id="medForm" placeholder="Ex.: cápsula VO" />
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <label>Posologia padrão</label>
+            <input id="medDose" placeholder="Ex.: 1 cápsula 8/8h por 7 dias" />
+          </div>
+          <div style="margin-top:10px">
+            <label>Orientações (opcional)</label>
+            <textarea id="medNotes" placeholder="Ex.: tomar após alimentação; evitar álcool; etc."></textarea>
+          </div>
+          <div class="rightTools">
+            <button class="primary" id="btnAddMed">➕ Salvar medicamento</button>
+            <button id="btnClearMed">🧼 Limpar campos</button>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="titleLine">
+            <h2>Pacientes</h2>
+            <p class="small">Memória rápida</p>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>Nome do paciente</label>
+              <input id="patName" placeholder="Ex.: Maria Silva" list="patientsList" />
+              <datalist id="patientsList"></datalist>
+            </div>
+            <div>
+              <label>CPF/Doc (opcional)</label>
+              <input id="patDoc" placeholder="CPF / RG" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>Data de nascimento (opcional)</label>
+              <input id="patBirth" type="date" />
+            </div>
+            <div>
+              <label>Telefone (opcional)</label>
+              <input id="patPhone" placeholder="(xx) xxxxx-xxxx" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label>Observações do paciente</label>
+            <textarea id="patNotes" placeholder="Alergias, condições, avisos rápidos..."></textarea>
+          </div>
+
+          <div class="rightTools">
+            <button class="primary" id="btnSavePatient">💾 Salvar/Atualizar paciente</button>
+            <button id="btnClearPatient">🧼 Limpar</button>
+          </div>
+
+          <div class="hint">
+            <span class="kbd">Auto</span> Tudo que você salva aqui vira autocomplete nos documentos e na agenda.
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT: App -->
+      <main class="main">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="agenda">📅 Agenda</div>
+          <div class="tab" data-tab="receita">💊 Receituário</div>
+          <div class="tab" data-tab="ficha">🧾 Ficha clínica</div>
+          <div class="tab" data-tab="atestado">🩺 Atestado</div>
+          <div class="tab" data-tab="orcamento">💰 Orçamento</div>
+        </div>
+
+        <div class="panelHead">
+          <div class="titleLine">
+            <h2 id="viewTitle">Agenda</h2>
+            <p class="small" id="viewSub">Cadastre atendimentos, status, e use como memória clínica.</p>
+          </div>
+        </div>
+
+        <div class="panelBody">
+          <!-- AGENDA -->
+          <section id="tab-agenda">
+            <div class="split">
+              <div>
+                <div class="card">
+                  <h3>Novo agendamento</h3>
+                  <p>Salva offline e aparece na lista abaixo.</p>
+
+                  <div class="row" style="margin-top:10px">
+                    <div>
+                      <label>Data</label>
+                      <input id="agDate" type="date" />
                     </div>
-                    <div class="form-group">
-                        <label>Horário:</label>
-                        <p>${appointment.time}</p>
+                    <div>
+                      <label>Hora</label>
+                      <input id="agTime" type="time" />
                     </div>
+                  </div>
+
+                  <div class="row" style="margin-top:10px">
+                    <div>
+                      <label>Paciente</label>
+                      <input id="agPatient" placeholder="Digite e selecione (autocomplete)" list="patientsList" />
+                    </div>
+                    <div>
+                      <label>Status</label>
+                      <select id="agStatus">
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Faltou">Faltou</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Remarcado">Remarcado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:10px">
+                    <label>Motivo / Observações</label>
+                    <textarea id="agNotes" placeholder="Ex.: dor, retorno, limpeza, canal, etc."></textarea>
+                  </div>
+
+                  <div class="rightTools">
+                    <button class="primary" id="btnAddAppt">➕ Adicionar</button>
+                    <button id="btnAgClear">🧼 Limpar</button>
+                  </div>
+
+                  <div class="hint">
+                    Dica visionária: usa a agenda como “memória do consultório”. Depois você filtra por paciente e vê tudo.
+                  </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Motivo da Consulta:</label>
-                    <p>${appointment.reason || 'N/A'}</p>
+
+                <div class="card" style="margin-top:10px">
+                  <h3>Busca rápida</h3>
+                  <p>Filtra por paciente, data, status.</p>
+                  <div class="row" style="margin-top:10px">
+                    <div>
+                      <label>Paciente</label>
+                      <input id="agFilterPatient" placeholder="Ex.: Maria" />
+                    </div>
+                    <div>
+                      <label>Status</label>
+                      <select id="agFilterStatus">
+                        <option value="">(todos)</option>
+                        <option>Confirmado</option>
+                        <option>Pendente</option>
+                        <option>Faltou</option>
+                        <option>Atendido</option>
+                        <option>Remarcado</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="margin-top:10px">
+                    <label>Data (opcional)</label>
+                    <input id="agFilterDate" type="date" />
+                  </div>
+                  <div class="rightTools">
+                    <button id="btnAgApply">🔎 Filtrar</button>
+                    <button id="btnAgReset">↩️ Limpar filtro</button>
+                  </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Observações:</label>
-                    <p>${appointment.notes || 'Nenhuma observação registrada.'}</p>
+              </div>
+
+              <div>
+                <div class="card">
+                  <h3>Lista de agendamentos</h3>
+                  <p>Toque em um item pra puxar dados para documentos (receita/ficha/atestado/orçamento).</p>
+                  <div class="hr"></div>
+                  <div id="apptList" class="list"></div>
+                  <div id="apptEmpty" class="empty" style="display:none">
+                    Ainda não tem agendamento. Crie um ali do lado e pronto.
+                  </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Status:</label>
-                    <p>
-                        <span class="status-badge" style="
-                            background-color: ${appointment.status === 'confirmed' ? 'var(--accent-color)' : 
-                                            appointment.status === 'completed' ? 'var(--secondary-color)' : 
-                                            appointment.status === 'cancelled' ? 'var(--danger-color)' : 'var(--warning-color)'};
-                            color: white;
-                            padding: 5px 10px;
-                            border-radius: 20px;
-                            font-size: 0.85rem;
-                        ">
-                            ${appointment.status === 'confirmed' ? 'Confirmada' : 
-                             appointment.status === 'completed' ? 'Realizada' : 
-                             appointment.status === 'cancelled' ? 'Cancelada' : 'Pendente'}
-                        </span>
-                    </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- RECEITA -->
+          <section id="tab-receita" style="display:none">
+            <div class="split">
+              <div class="card">
+                <h3>Receita (montagem rápida)</h3>
+                <p>Seleciona o paciente e adiciona medicamentos da biblioteca.</p>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Paciente</label>
+                    <input id="rxPatient" list="patientsList" placeholder="Selecione ou digite" />
+                  </div>
+                  <div>
+                    <label>Data</label>
+                    <input id="rxDate" type="date" />
+                  </div>
                 </div>
-                
-                <div class="button-group" style="margin-top: 30px;">
-                    <button class="btn btn-primary" id="edit-appointment-btn" data-id="${appointment.id}">
-                        <i class="fas fa-edit"></i> Editar Consulta
-                    </button>
-                    <button class="btn btn-success" id="complete-appointment-btn" data-id="${appointment.id}">
-                        <i class="fas fa-check-circle"></i> Marcar como Realizada
-                    </button>
+
+                <div class="hr"></div>
+
+                <div class="row">
+                  <div>
+                    <label>Buscar medicamento salvo</label>
+                    <input id="rxMedSearch" placeholder="Digite: amoxi, dipirona, ibup..." list="medsList" />
+                    <datalist id="medsList"></datalist>
+                    <div class="hint">Ele puxa posologia e orientação automaticamente.</div>
+                  </div>
+                  <div>
+                    <label>Qtd/Detalhe extra (opcional)</label>
+                    <input id="rxQty" placeholder="Ex.: 1 caixa / 20 comp." />
+                  </div>
                 </div>
-            `;
-            
-            // Abrir modal
-            document.getElementById('appointment-modal').classList.add('active');
-            
-            // Adicionar eventos aos botões do modal
-            document.getElementById('edit-appointment-btn').addEventListener('click', function() {
-                alert(`Editar consulta ${appointmentId} - Em um sistema real, isso abriria um formulário de edição.`);
-            });
-            
-            document.getElementById('complete-appointment-btn').addEventListener('click', function() {
-                appointment.status = 'completed';
-                localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
-                loadAppointmentsTable();
-                updateDashboardCounters();
-                document.querySelector('.close-modal').click();
-                alert('Consulta marcada como realizada!');
-            });
-        }
-        
-        // Fechar modal
-        document.querySelector('.close-modal').addEventListener('click', function() {
-            document.getElementById('appointment-modal').classList.remove('active');
-        });
-        
-        // Fechar modal ao clicar fora
-        document.getElementById('appointment-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-        
-        // Calendário
-        let currentDate = new Date();
-        
-        function generateCalendar() {
-            const monthYear = document.getElementById('calendar-month');
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            
-            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-                               "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            
-            monthYear.textContent = `${monthNames[month]} ${year}`;
-            
-            // Primeiro dia do mês
-            const firstDay = new Date(year, month, 1);
-            // Último dia do mês
-            const lastDay = new Date(year, month + 1, 0);
-            
-            // Dias da semana (0 = Domingo, 1 = Segunda, etc.)
-            const startingDay = firstDay.getDay();
-            
-            // Limpar calendário
-            const calendarDays = document.getElementById('calendar-days');
-            calendarDays.innerHTML = '';
-            
-            // Dias vazios antes do primeiro dia do mês
-            for (let i = 0; i < startingDay; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.classList.add('calendar-day', 'empty');
-                calendarDays.appendChild(emptyDay);
-            }
-            
-            // Dias do mês
-            for (let day = 1; day <= lastDay.getDate(); day++) {
-                const dayElement = document.createElement('div');
-                dayElement.classList.add('calendar-day');
-                
-                // Verificar se é hoje
-                const today = new Date();
-                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                    dayElement.classList.add('today');
-                }
-                
-                dayElement.innerHTML = `<strong>${day}</strong>`;
-                
-                // Verificar se há consultas neste dia
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const dayAppointments = appointments.filter(app => app.date === dateStr);
-                
-                dayAppointments.forEach(app => {
-                    const patient = patients.find(p => p.id === app.patientId);
-                    const eventElement = document.createElement('div');
-                    eventElement.classList.add('calendar-event');
-                    eventElement.textContent = `${app.time} - ${patient ? patient.name.substring(0, 10) + '...' : 'Consulta'}`;
-                    eventElement.title = `${app.time} - ${patient ? patient.name : 'Consulta'} - ${app.reason || 'Sem motivo especificado'}`;
-                    eventElement.addEventListener('click', function() {
-                        showAppointmentDetails(app.id);
-                    });
-                    
-                    // Cor baseada no status
-                    if (app.status === 'completed') {
-                        eventElement.style.backgroundColor = 'var(--secondary-color)';
-                    } else if (app.status === 'cancelled') {
-                        eventElement.style.backgroundColor = 'var(--danger-color)';
-                    }
-                    
-                    dayElement.appendChild(eventElement);
-                });
-                
-                calendarDays.appendChild(dayElement);
-            }
-        }
-        
-        // Navegação do calendário
-        document.getElementById('prev-month').addEventListener('click', function() {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            generateCalendar();
-        });
-        
-        document.getElementById('next-month').addEventListener('click', function() {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            generateCalendar();
-        });
-        
-        document.getElementById('today-btn').addEventListener('click', function() {
-            currentDate = new Date();
-            generateCalendar();
-        });
-        
-        // Carregar tabela de pacientes para exportação
-        function loadExportPatientsTable() {
-            const tableBody = document.getElementById('export-patients-table');
-            tableBody.innerHTML = '';
-            
-            patients.forEach(patient => {
-                const clinicalRecord = clinicalRecords.find(record => record.patientId === patient.id);
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td><input type="checkbox" class="patient-checkbox" value="${patient.id}"></td>
-                    <td>${patient.name}</td>
-                    <td>${clinicalRecord ? formatDate(clinicalRecord.updatedAt) : 'N/A'}</td>
-                    <td>
-                        <button class="btn btn-outline export-patient-btn" data-id="${patient.id}" style="padding: 5px 10px; font-size: 0.9rem;">
-                            <i class="fas fa-file-pdf"></i> Exportar
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Evento para selecionar todos os pacientes
-            document.getElementById('select-all-patients').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.patient-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-            });
-            
-            // Evento para exportar paciente individual
-            document.querySelectorAll('.export-patient-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const patientId = this.getAttribute('data-id');
-                    exportPatientPDF(patientId);
-                });
-            });
-        }
-        
-        // Exportar PDF de paciente
-        function exportPatientPDF(patientId) {
-            const patient = patients.find(p => p.id === patientId);
-            if (!patient) return;
-            
-            const clinicalRecord = clinicalRecords.find(record => record.patientId === patientId);
-            
-            // Em um sistema real, aqui usaria uma biblioteca como jsPDF para gerar o PDF
-            // Por enquanto, apenas simularemos
-            alert(`Gerando PDF para ${patient.name}...\n\nEm um sistema real, isso geraria um PDF com todas as informações do paciente e sua ficha clínica.`);
-            
-            // Incrementar contador de PDFs
-            pdfCount++;
-            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            updateDashboardCounters();
-        }
-        
-        // Exportar pacientes selecionados
-        document.getElementById('export-selected-patients').addEventListener('click', function() {
-            const selectedCheckboxes = document.querySelectorAll('.patient-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert('Selecione pelo menos um paciente para exportar.');
-                return;
-            }
-            
-            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-            alert(`Exportando ${selectedIds.length} fichas clínicas em PDF...\n\nEm um sistema real, isso geraria um PDF com múltiplas fichas ou um arquivo ZIP.`);
-            
-            // Incrementar contador de PDFs
-            pdfCount += selectedIds.length;
-            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            updateDashboardCounters();
-        });
-        
-        // Exportar todos os pacientes
-        document.getElementById('export-all-patients').addEventListener('click', function() {
-            if (patients.length === 0) {
-                alert('Não há pacientes cadastrados para exportar.');
-                return;
-            }
-            
-            alert(`Exportando todas as ${patients.length} fichas clínicas...\n\nEm um sistema real, isso geraria um arquivo ZIP com todos os PDFs.`);
-            
-            // Incrementar contador de PDFs
-            pdfCount += patients.length;
-            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            updateDashboardCounters();
-        });
-        
-        // Exportar agenda em PDF
-        document.getElementById('export-schedule-pdf').addEventListener('click', function() {
-            const startDate = document.getElementById('export-start-date').value;
-            const endDate = document.getElementById('export-end-date').value;
-            
-            if (!startDate || !endDate) {
-                alert('Por favor, selecione o período para exportar.');
-                return;
-            }
-            
-            alert(`Exportando agenda de ${startDate} a ${endDate} em PDF...\n\nEm um sistema real, isso geraria um PDF com a agenda do período selecionado.`);
-            
-            // Incrementar contador de PDFs
-            pdfCount++;
-            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            updateDashboardCounters();
-        });
-        
-        // Exportar agenda em CSV
-        document.getElementById('export-schedule-csv').addEventListener('click', function() {
-            const startDate = document.getElementById('export-start-date').value;
-            const endDate = document.getElementById('export-end-date').value;
-            
-            if (!startDate || !endDate) {
-                alert('Por favor, selecione o período para exportar.');
-                return;
-            }
-            
-            alert(`Exportando agenda de ${startDate} a ${endDate} em CSV...\n\nEm um sistema real, isso baixaria um arquivo CSV com os dados da agenda.`);
-        });
-        
-        // Adicionar nova consulta
-        document.getElementById('add-appointment').addEventListener('click', function() {
-            // Verificar se há pacientes cadastrados
-            if (patients.length === 0) {
-                alert('Cadastre pelo menos um paciente antes de agendar uma consulta.');
-                document.querySelector('a[data-tab="patient-registration"]').click();
-                return;
-            }
-            
-            // Em um sistema real, isso abriria um formulário de agendamento
-            // Por enquanto, vamos criar uma consulta de exemplo
-            const samplePatient = patients[0];
-            
-            const appointment = {
-                id: Date.now().toString(),
-                patientId: samplePatient.id,
-                date: new Date().toISOString().split('T')[0],
-                time: '14:30',
-                reason: 'Consulta de rotina',
-                notes: '',
-                status: 'confirmed',
-                createdAt: new Date().toISOString()
-            };
-            
-            appointments.push(appointment);
-            localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
-            
-            // Atualizar a ficha clínica do paciente
-            const clinicalRecord = clinicalRecords.find(record => record.patientId === samplePatient.id);
-            if (clinicalRecord) {
-                clinicalRecord.nextAppointment = appointment.date;
-                clinicalRecord.updatedAt = new Date().toISOString();
-                localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
-            }
-            
-            alert(`Consulta agendada para ${samplePatient.name} às ${appointment.time} do dia ${formatDate(appointment.date)}.`);
-            loadAppointmentsTable();
-            updateDashboardCounters();
-        });
-        
-        // Adicionar nova ficha clínica
-        document.getElementById('add-clinical-record').addEventListener('click', function() {
-            if (patients.length === 0) {
-                alert('Cadastre pelo menos um paciente antes de criar uma ficha clínica.');
-                document.querySelector('a[data-tab="patient-registration"]').click();
-                return;
-            }
-            
-            alert('Em um sistema real, isso abriria um formulário para criar uma nova ficha clínica.');
-        });
-        
-        // Exportar PDF de fichas clínicas
-        document.getElementById('export-clinical-pdf').addEventListener('click', function() {
-            if (clinicalRecords.length === 0) {
-                alert('Não há fichas clínicas para exportar.');
-                return;
-            }
-            
-            alert(`Exportando ${clinicalRecords.length} fichas clínicas em PDF...\n\nEm um sistema real, isso geraria um PDF com todas as fichas clínicas.`);
-            
-            // Incrementar contador de PDFs
-            pdfCount++;
-            localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            updateDashboardCounters();
-        });
-        
-        // Funções utilitárias
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-BR');
-        }
-        
-        // Inicializar dados de exemplo se não houver dados
-        function initializeSampleData() {
-            if (patients.length === 0) {
-                // Criar alguns pacientes de exemplo
-                const samplePatients = [
-                    {
-                        id: '1',
-                        name: 'Maria Silva Santos',
-                        cpf: '123.456.789-00',
-                        dob: '1985-05-15',
-                        phone: '(11) 98765-4321',
-                        email: 'maria.silva@email.com',
-                        gender: 'Feminino',
-                        address: 'Rua das Flores, 123, Apt 45',
-                        city: 'São Paulo',
-                        state: 'SP',
-                        allergies: 'Penicilina, Ibuprofeno',
-                        medications: 'Losartana 50mg, Metformina 850mg',
-                        history: 'Hipertensão arterial, Diabetes tipo 2',
-                        createdAt: '2024-01-15T10:30:00Z'
-                    },
-                    {
-                        id: '2',
-                        name: 'João Oliveira Costa',
-                        cpf: '987.654.321-00',
-                        dob: '1978-11-22',
-                        phone: '(11) 91234-5678',
-                        email: 'joao.costa@email.com',
-                        gender: 'Masculino',
-                        address: 'Av. Paulista, 1000, Conj 120',
-                        city: 'São Paulo',
-                        state: 'SP',
-                        allergies: 'Nenhuma conhecida',
-                        medications: 'Atorvastatina 20mg',
-                        history: 'Hipercolesterolemia',
-                        createdAt: '2024-01-20T14:15:00Z'
-                    },
-                    {
-                        id: '3',
-                        name: 'Ana Paula Rodrigues',
-                        cpf: '456.789.123-00',
-                        dob: '1992-03-08',
-                        phone: '(11) 99876-5432',
-                        email: 'ana.rodrigues@email.com',
-                        gender: 'Feminino',
-                        address: 'Rua Augusta, 500',
-                        city: 'São Paulo',
-                        state: 'SP',
-                        allergies: 'Dipirona',
-                        medications: 'Nenhuma',
-                        history: 'Enxaqueca crônica',
-                        createdAt: '2024-02-01T09:00:00Z'
-                    }
-                ];
-                
-                patients = samplePatients;
-                localStorage.setItem('medsystem_patients', JSON.stringify(patients));
-                
-                // Criar fichas clínicas de exemplo
-                const sampleClinicalRecords = [
-                    {
-                        id: '101',
-                        patientId: '1',
-                        patientName: 'Maria Silva Santos',
-                        lastAppointment: '2024-02-10T14:30:00Z',
-                        nextAppointment: '2024-03-15T14:30:00Z',
-                        condition: 'Hipertensão e Diabetes controlados',
-                        notes: 'Paciente com boa adesão ao tratamento. Pressão arterial 120x80. Glicemia em jejum 98mg/dL.',
-                        createdAt: '2024-01-15T10:30:00Z',
-                        updatedAt: '2024-02-10T15:45:00Z'
-                    },
-                    {
-                        id: '102',
-                        patientId: '2',
-                        patientName: 'João Oliveira Costa',
-                        lastAppointment: '2024-02-05T10:00:00Z',
-                        nextAppointment: '2024-05-05T10:00:00Z',
-                        condition: 'Colesterol em redução',
-                        notes: 'Colesterol total reduziu de 240 para 210. Manter dieta e exercícios.',
-                        createdAt: '2024-01-20T14:15:00Z',
-                        updatedAt: '2024-02-05T11:20:00Z'
-                    },
-                    {
-                        id: '103',
-                        patientId: '3',
-                        patientName: 'Ana Paula Rodrigues',
-                        lastAppointment: '2024-02-12T16:00:00Z',
-                        nextAppointment: '2024-04-12T16:00:00Z',
-                        condition: 'Enxaqueca em investigação',
-                        notes: 'Iniciado tratamento profilático. Agendar retorno em 60 dias.',
-                        createdAt: '2024-02-01T09:00:00Z',
-                        updatedAt: '2024-02-12T17:10:00Z'
-                    }
-                ];
-                
-                clinicalRecords = sampleClinicalRecords;
-                localStorage.setItem('medsystem_clinical_records', JSON.stringify(clinicalRecords));
-                
-                // Criar agendamentos de exemplo
-                const today = new Date();
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                const sampleAppointments = [
-                    {
-                        id: '201',
-                        patientId: '1',
-                        date: today.toISOString().split('T')[0],
-                        time: '14:30',
-                        reason: 'Acompanhamento hipertensão',
-                        notes: 'Verificar pressão arterial e ajustar medicação se necessário',
-                        status: 'confirmed',
-                        createdAt: '2024-02-01T08:00:00Z'
-                    },
-                    {
-                        id: '202',
-                        patientId: '3',
-                        date: today.toISOString().split('T')[0],
-                        time: '16:00',
-                        reason: 'Retorno enxaqueca',
-                        notes: 'Avaliar eficácia do tratamento',
-                        status: 'completed',
-                        createdAt: '2024-01-28T14:30:00Z'
-                    },
-                    {
-                        id: '203',
-                        patientId: '2',
-                        date: tomorrow.toISOString().split('T')[0],
-                        time: '10:00',
-                        reason: 'Exames de colesterol',
-                        notes: 'Coleta de sangue para perfil lipídico',
-                        status: 'confirmed',
-                        createdAt: '2024-02-05T11:20:00Z'
-                    }
-                ];
-                
-                appointments = sampleAppointments;
-                localStorage.setItem('medsystem_appointments', JSON.stringify(appointments));
-                
-                // Inicializar contador de PDFs
-                pdfCount = 3;
-                localStorage.setItem('medsystem_pdf_count', pdfCount.toString());
-            }
-        }
-        
-        // Inicializar o sistema
-        initializeSampleData();
-        updateDashboardCounters();
-        generateCalendar();
-        
-        // Inicializar datepickers
-        flatpickr("#patient-dob", {
-            dateFormat: "Y-m-d",
-            maxDate: "today"
-        });
-        
-        flatpickr("#export-start-date, #export-end-date", {
-            dateFormat: "Y-m-d"
-        });
-        
-        // Adicionar evento para o botão de nova consulta no dashboard
-        document.querySelector('button[data-tab="appointment-schedule"]').addEventListener('click', function() {
-            document.getElementById('add-appointment').click();
-        });
-    </script>
+
+                <div style="margin-top:10px">
+                  <label>Posologia / Modo de uso</label>
+                  <input id="rxDose" placeholder="Vai preencher automático, mas você pode editar" />
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Orientações</label>
+                  <textarea id="rxNotes" placeholder="Vai preencher automático, mas você pode editar"></textarea>
+                </div>
+
+                <div class="rightTools">
+                  <button class="primary" id="btnRxAddItem">➕ Adicionar à receita</button>
+                  <button id="btnRxClearItem">🧼 Limpar item</button>
+                </div>
+
+                <div class="hr"></div>
+
+                <label>Observações gerais (opcional)</label>
+                <textarea id="rxGeneral" placeholder="Ex.: retornar em 7 dias; se alergia, suspender e procurar atendimento..."></textarea>
+
+                <div class="rightTools">
+                  <button class="ok" id="btnRxPreview">👁️ Pré-visualizar</button>
+                  <button class="primary" id="btnRxPrint">🖨️ Imprimir/Salvar PDF</button>
+                  <button class="danger" id="btnRxReset">🧨 Limpar receita</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Itens da receita</h3>
+                <p>Lista do que vai sair no documento.</p>
+                <div class="hr"></div>
+                <div id="rxItems" class="list"></div>
+                <div id="rxEmpty" class="empty" style="display:none">
+                  Adicione medicamentos usando a busca ali do lado.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- FICHA -->
+          <section id="tab-ficha" style="display:none">
+            <div class="split">
+              <div class="card">
+                <h3>Ficha clínica</h3>
+                <p>Modelo “limpo” e direto. Salva por paciente.</p>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Paciente</label>
+                    <input id="fcPatient" list="patientsList" placeholder="Selecione ou digite" />
+                  </div>
+                  <div>
+                    <label>Data</label>
+                    <input id="fcDate" type="date" />
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Queixa principal</label>
+                    <input id="fcChief" placeholder="Ex.: dor no molar superior" />
+                  </div>
+                  <div>
+                    <label>Procedimento / Conduta</label>
+                    <input id="fcPlan" placeholder="Ex.: restauração / profilaxia / canal" />
+                  </div>
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Anamnese / Histórico</label>
+                  <textarea id="fcHx" placeholder="Doenças, cirurgias, medicações, alergias, etc."></textarea>
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Exame clínico</label>
+                  <textarea id="fcExam" placeholder="Achados, sinais, exames complementares..."></textarea>
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Evolução / Observações</label>
+                  <textarea id="fcEvol" placeholder="Evolução, retorno, orientação pós..."></textarea>
+                </div>
+
+                <div class="rightTools">
+                  <button class="primary" id="btnFcSave">💾 Salvar ficha</button>
+                  <button class="ok" id="btnFcPreview">👁️ Pré-visualizar</button>
+                  <button class="primary" id="btnFcPrint">🖨️ Imprimir/Salvar PDF</button>
+                  <button class="danger" id="btnFcClear">🧨 Limpar</button>
+                </div>
+
+                <div class="hint">Dica: você pode puxar dados clicando num agendamento na agenda.</div>
+              </div>
+
+              <div class="card">
+                <h3>Histórico de fichas</h3>
+                <p>Filtra por paciente.</p>
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Filtro paciente</label>
+                    <input id="fcFilter" placeholder="Ex.: Maria" />
+                  </div>
+                  <div>
+                    <label>&nbsp;</label>
+                    <button id="btnFcFilter">🔎 Filtrar</button>
+                  </div>
+                </div>
+                <div class="hr"></div>
+                <div id="fcList" class="list"></div>
+                <div id="fcEmpty" class="empty" style="display:none">
+                  Nenhuma ficha salva ainda.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ATESTADO -->
+          <section id="tab-atestado" style="display:none">
+            <div class="split">
+              <div class="card">
+                <h3>Atestado</h3>
+                <p>Gera um documento elegante com assinatura no rodapé.</p>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Paciente</label>
+                    <input id="atPatient" list="patientsList" placeholder="Selecione ou digite" />
+                  </div>
+                  <div>
+                    <label>Data</label>
+                    <input id="atDate" type="date" />
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Dias de afastamento</label>
+                    <input id="atDays" type="number" min="0" placeholder="Ex.: 2" />
+                  </div>
+                  <div>
+                    <label>Horário (opcional)</label>
+                    <input id="atHours" placeholder="Ex.: 08:00 às 12:00" />
+                  </div>
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Texto do atestado</label>
+                  <textarea id="atText" placeholder="Ex.: Atesto para os devidos fins que..."></textarea>
+                  <div class="hint">Se deixar vazio, eu gero um texto padrão.</div>
+                </div>
+
+                <div class="rightTools">
+                  <button class="ok" id="btnAtPreview">👁️ Pré-visualizar</button>
+                  <button class="primary" id="btnAtPrint">🖨️ Imprimir/Salvar PDF</button>
+                  <button class="danger" id="btnAtClear">🧨 Limpar</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Modelo padrão inteligente</h3>
+                <p class="muted">Gera automaticamente se você não escrever o texto.</p>
+                <div class="hr"></div>
+                <div class="empty">
+                  “Atesto para os devidos fins que o(a) paciente acima identificado(a) esteve sob atendimento odontológico nesta data, necessitando de afastamento de suas atividades pelo período informado, a contar de hoje.”
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ORÇAMENTO -->
+          <section id="tab-orcamento" style="display:none">
+            <div class="split">
+              <div class="card">
+                <h3>Orçamento</h3>
+                <p>Texto livre + itens, sem soma automática (como você gosta), mas organizado.</p>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Paciente</label>
+                    <input id="orPatient" list="patientsList" placeholder="Selecione ou digite" />
+                  </div>
+                  <div>
+                    <label>Data</label>
+                    <input id="orDate" type="date" />
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top:10px">
+                  <div>
+                    <label>Item (procedimento)</label>
+                    <input id="orItemName" placeholder="Ex.: Restauração resina" />
+                  </div>
+                  <div>
+                    <label>Valor (texto)</label>
+                    <input id="orItemValue" placeholder="Ex.: R$ 250,00" />
+                  </div>
+                </div>
+
+                <div class="rightTools" style="margin-top:10px">
+                  <button class="primary" id="btnOrAdd">➕ Adicionar item</button>
+                  <button id="btnOrClearItem">🧼 Limpar item</button>
+                </div>
+
+                <div style="margin-top:10px">
+                  <label>Condições / Observações</label>
+                  <textarea id="orNotes" placeholder="Ex.: validade 7 dias; entrada + parcelas; materiais inclusos..."></textarea>
+                </div>
+
+                <div class="rightTools">
+                  <button class="ok" id="btnOrPreview">👁️ Pré-visualizar</button>
+                  <button class="primary" id="btnOrPrint">🖨️ Imprimir/Salvar PDF</button>
+                  <button class="danger" id="btnOrReset">🧨 Limpar orçamento</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>Itens do orçamento</h3>
+                <p>O que vai sair no documento.</p>
+                <div class="hr"></div>
+                <div id="orItems" class="list"></div>
+                <div id="orEmpty" class="empty" style="display:none">
+                  Adicione itens do orçamento.
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- PREVIEW/PRINT OVERLAY -->
+  <div class="printOverlay" id="printOverlay" role="dialog" aria-modal="true">
+    <div class="printShell">
+      <div class="printTop">
+        <div>
+          <strong id="printTitle">Documento</strong>
+          <div class="muted" id="printSubtitle">Pré-visualização com borda e topo/rodapé</div>
+        </div>
+        <div class="mini">
+          <button id="btnOverlayPrint" class="primary">🖨️ Imprimir/PDF</button>
+          <button id="btnOverlayClose">✖️ Fechar</button>
+        </div>
+      </div>
+      <div class="printBody" id="printPreview"></div>
+    </div>
+  </div>
+
+  <!-- Hidden print area (used by window.print) -->
+  <div class="printArea" id="printArea"></div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* =======================
+   Storage
+======================= */
+const KEY = "btx_docs_v1";
+const state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return defaultState();
+    const s = JSON.parse(raw);
+    return Object.assign(defaultState(), s);
+  }catch(e){
+    return defaultState();
+  }
+}
+function defaultState(){
+  return {
+    dentist: { name:"", reg:"", phone:"", email:"", addr:"" },
+    meds: [], // {id,name,form,dose,notes,usedCount,updatedAt}
+    patients: [], // {id,name,doc,birth,phone,notes,updatedAt}
+    appts: [], // {id,date,time,patient,status,notes,createdAt,updatedAt}
+    rxDraft: { patient:"", date:"", items:[], general:"" },
+    fichas: [], // {id,patient,date,chief,plan,hx,exam,evol,createdAt}
+    orDraft: { patient:"", date:"", items:[], notes:"" }
+  };
+}
+function saveState(){
+  localStorage.setItem(KEY, JSON.stringify(state));
+  refreshAll();
+}
+function uid(prefix="id"){
+  return prefix + "_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+}
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"), 2400);
+}
+
+/* =======================
+   DOM helpers
+======================= */
+const $ = (id)=>document.getElementById(id);
+function setTodayIfEmpty(inputId){
+  const el = $(inputId);
+  if(!el.value){
+    const d = new Date();
+    const iso = d.toISOString().slice(0,10);
+    el.value = iso;
+  }
+}
+function safeText(v){ return (v ?? "").toString().trim(); }
+function byUpdatedDesc(a,b){ return (b.updatedAt||0) - (a.updatedAt||0); }
+
+/* =======================
+   Tabs
+======================= */
+const tabsEl = $("tabs");
+tabsEl.addEventListener("click", (e)=>{
+  const t = e.target.closest(".tab");
+  if(!t) return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  const name = t.dataset.tab;
+  showTab(name);
+});
+function showTab(name){
+  const map = {
+    agenda: ["Agenda","Cadastre atendimentos, status, e use como memória clínica."],
+    receita: ["Receituário","Biblioteca de medicamentos + impressão elegante."],
+    ficha: ["Ficha clínica","Salva por paciente e permite histórico."],
+    atestado: ["Atestado","Documento rápido com assinatura e rodapé."],
+    orcamento: ["Orçamento","Itens + condições, organizado e profissional."]
+  };
+  $("viewTitle").textContent = map[name][0];
+  $("viewSub").textContent = map[name][1];
+  ["agenda","receita","ficha","atestado","orcamento"].forEach(k=>{
+    $("tab-"+k).style.display = (k===name) ? "block" : "none";
+  });
+}
+
+/* =======================
+   Dentist binding
+======================= */
+["dentName","dentReg","dentPhone","dentEmail","dentAddr"].forEach((id, idx)=>{
+  const key = ["name","reg","phone","email","addr"][idx];
+  const el = $(id);
+  el.value = state.dentist[key] || "";
+  el.addEventListener("input", ()=>{
+    state.dentist[key] = el.value;
+    state.dentist.updatedAt = Date.now();
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+});
+
+/* =======================
+   Meds library
+======================= */
+$("btnAddMed").addEventListener("click", ()=>{
+  const name = safeText($("medName").value);
+  if(!name) return toast("Digite o nome do medicamento.");
+  const form = safeText($("medForm").value);
+  const dose = safeText($("medDose").value);
+  const notes = safeText($("medNotes").value);
+
+  // If exists (same name), update it
+  const existing = state.meds.find(m => m.name.toLowerCase() === name.toLowerCase());
+  if(existing){
+    existing.form = form;
+    existing.dose = dose;
+    existing.notes = notes;
+    existing.updatedAt = Date.now();
+    toast("Medicamento atualizado.");
+  }else{
+    state.meds.push({
+      id: uid("med"),
+      name, form, dose, notes,
+      usedCount: 0,
+      updatedAt: Date.now()
+    });
+    toast("Medicamento salvo.");
+  }
+  saveState();
+  clearMedFields(false);
+});
+$("btnClearMed").addEventListener("click", ()=>clearMedFields(true));
+function clearMedFields(clearAll){
+  $("medName").value = "";
+  if(clearAll){
+    $("medForm").value = "";
+    $("medDose").value = "";
+    $("medNotes").value = "";
+  }
+}
+
+/* =======================
+   Patients
+======================= */
+$("btnSavePatient").addEventListener("click", ()=>{
+  const name = safeText($("patName").value);
+  if(!name) return toast("Digite o nome do paciente.");
+  const doc = safeText($("patDoc").value);
+  const birth = $("patBirth").value || "";
+  const phone = safeText($("patPhone").value);
+  const notes = safeText($("patNotes").value);
+
+  const existing = state.patients.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if(existing){
+    existing.doc = doc; existing.birth = birth; existing.phone = phone; existing.notes = notes;
+    existing.updatedAt = Date.now();
+    toast("Paciente atualizado.");
+  }else{
+    state.patients.push({
+      id: uid("pat"),
+      name, doc, birth, phone, notes,
+      updatedAt: Date.now()
+    });
+    toast("Paciente salvo.");
+  }
+  saveState();
+});
+$("btnClearPatient").addEventListener("click", ()=>{
+  ["patName","patDoc","patBirth","patPhone","patNotes"].forEach(id=>$(id).value="");
+});
+
+/* =======================
+   Agenda
+======================= */
+setTodayIfEmpty("agDate");
+$("btnAddAppt").addEventListener("click", ()=>{
+  const date = $("agDate").value;
+  const time = $("agTime").value || "";
+  const patient = safeText($("agPatient").value);
+  const status = $("agStatus").value;
+  const notes = safeText($("agNotes").value);
+
+  if(!date) return toast("Selecione a data.");
+  if(!patient) return toast("Informe o paciente (pode digitar).");
+
+  const now = Date.now();
+  state.appts.push({
+    id: uid("appt"),
+    date, time, patient, status, notes,
+    createdAt: now, updatedAt: now
+  });
+
+  // If patient exists, update timestamp; else create quick patient record
+  const p = state.patients.find(x=>x.name.toLowerCase()===patient.toLowerCase());
+  if(p){ p.updatedAt = now; }
+  else{
+    state.patients.push({ id: uid("pat"), name: patient, doc:"", birth:"", phone:"", notes:"", updatedAt: now });
+  }
+
+  saveState();
+  toast("Agendamento salvo.");
+  $("agNotes").value = "";
+});
+$("btnAgClear").addEventListener("click", ()=>{
+  $("agTime").value = "";
+  $("agPatient").value = "";
+  $("agNotes").value = "";
+  $("agStatus").value = "Confirmado";
+});
+$("btnAgApply").addEventListener("click", renderAppts);
+$("btnAgReset").addEventListener("click", ()=>{
+  $("agFilterPatient").value = "";
+  $("agFilterStatus").value = "";
+  $("agFilterDate").value = "";
+  renderAppts();
+});
+
+/* =======================
+   Receita draft
+======================= */
+setTodayIfEmpty("rxDate");
+$("rxMedSearch").addEventListener("input", ()=>{
+  const q = safeText($("rxMedSearch").value).toLowerCase();
+  const m = state.meds.find(x=>x.name.toLowerCase()===q);
+  if(m){
+    $("rxDose").value = m.dose || "";
+    $("rxNotes").value = m.notes || "";
+  }
+});
+$("btnRxAddItem").addEventListener("click", ()=>{
+  const medName = safeText($("rxMedSearch").value);
+  if(!medName) return toast("Escolha/digite um medicamento.");
+  const dose = safeText($("rxDose").value);
+  const notes = safeText($("rxNotes").value);
+  const qty = safeText($("rxQty").value);
+
+  state.rxDraft.patient = safeText($("rxPatient").value);
+  state.rxDraft.date = $("rxDate").value || "";
+  state.rxDraft.general = safeText($("rxGeneral").value);
+
+  state.rxDraft.items.push({
+    id: uid("rxitem"),
+    medName, dose, notes, qty
+  });
+
+  // Increase usage
+  const m = state.meds.find(x=>x.name.toLowerCase()===medName.toLowerCase());
+  if(m){ m.usedCount = (m.usedCount||0)+1; m.updatedAt = Date.now(); }
+
+  saveState();
+  toast("Item adicionado.");
+  $("rxMedSearch").value = "";
+  $("rxQty").value = "";
+  $("rxDose").value = "";
+  $("rxNotes").value = "";
+});
+$("btnRxClearItem").addEventListener("click", ()=>{
+  $("rxMedSearch").value = "";
+  $("rxQty").value = "";
+  $("rxDose").value = "";
+  $("rxNotes").value = "";
+});
+$("btnRxReset").addEventListener("click", ()=>{
+  state.rxDraft = { patient:"", date:"", items:[], general:"" };
+  $("rxPatient").value = "";
+  setTodayIfEmpty("rxDate");
+  $("rxGeneral").value = "";
+  saveState();
+  toast("Receita limpa.");
+});
+$("btnRxPreview").addEventListener("click", ()=>openPreview(buildRxDoc()));
+$("btnRxPrint").addEventListener("click", ()=>printNow(buildRxDoc()));
+
+/* =======================
+   Ficha clínica
+======================= */
+setTodayIfEmpty("fcDate");
+$("btnFcSave").addEventListener("click", ()=>{
+  const patient = safeText($("fcPatient").value);
+  const date = $("fcDate").value || "";
+  if(!patient) return toast("Selecione/digite o paciente.");
+  if(!date) return toast("Selecione a data.");
+
+  const ficha = {
+    id: uid("fc"),
+    patient,
+    date,
+    chief: safeText($("fcChief").value),
+    plan: safeText($("fcPlan").value),
+    hx: safeText($("fcHx").value),
+    exam: safeText($("fcExam").value),
+    evol: safeText($("fcEvol").value),
+    createdAt: Date.now()
+  };
+  state.fichas.unshift(ficha);
+  saveState();
+  toast("Ficha salva.");
+});
+$("btnFcPreview").addEventListener("click", ()=>openPreview(buildFichaDoc()));
+$("btnFcPrint").addEventListener("click", ()=>printNow(buildFichaDoc()));
+$("btnFcClear").addEventListener("click", ()=>{
+  ["fcPatient","fcChief","fcPlan","fcHx","fcExam","fcEvol"].forEach(id=>$(id).value="");
+  setTodayIfEmpty("fcDate");
+});
+$("btnFcFilter").addEventListener("click", renderFichas);
+
+/* =======================
+   Atestado
+======================= */
+setTodayIfEmpty("atDate");
+$("btnAtPreview").addEventListener("click", ()=>openPreview(buildAtestadoDoc()));
+$("btnAtPrint").addEventListener("click", ()=>printNow(buildAtestadoDoc()));
+$("btnAtClear").addEventListener("click", ()=>{
+  ["atPatient","atDays","atHours","atText"].forEach(id=>$(id).value="");
+  setTodayIfEmpty("atDate");
+});
+
+/* =======================
+   Orçamento
+======================= */
+setTodayIfEmpty("orDate");
+$("btnOrAdd").addEventListener("click", ()=>{
+  const name = safeText($("orItemName").value);
+  const value = safeText($("orItemValue").value);
+  if(!name) return toast("Digite o item do orçamento.");
+  state.orDraft.patient = safeText($("orPatient").value);
+  state.orDraft.date = $("orDate").value || "";
+  state.orDraft.notes = safeText($("orNotes").value);
+  state.orDraft.items.push({ id: uid("oritem"), name, value });
+  saveState();
+  toast("Item adicionado.");
+  $("orItemName").value = "";
+  $("orItemValue").value = "";
+});
+$("btnOrClearItem").addEventListener("click", ()=>{
+  $("orItemName").value = "";
+  $("orItemValue").value = "";
+});
+$("btnOrReset").addEventListener("click", ()=>{
+  state.orDraft = { patient:"", date:"", items:[], notes:"" };
+  $("orPatient").value = "";
+  $("orNotes").value = "";
+  setTodayIfEmpty("orDate");
+  saveState();
+  toast("Orçamento limpo.");
+});
+$("btnOrPreview").addEventListener("click", ()=>openPreview(buildOrcDoc()));
+$("btnOrPrint").addEventListener("click", ()=>printNow(buildOrcDoc()));
+
+/* =======================
+   Renderers
+======================= */
+function refreshAll(){
+  renderPatientsDatalist();
+  renderMedsDatalist();
+  renderAppts();
+  renderRxItems();
+  renderFichas();
+  renderOrItems();
+}
+function renderPatientsDatalist(){
+  const dl = $("patientsList");
+  dl.innerHTML = "";
+  state.patients.slice().sort(byUpdatedDesc).forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    dl.appendChild(opt);
+  });
+}
+function renderMedsDatalist(){
+  const dl = $("medsList");
+  dl.innerHTML = "";
+  state.meds.slice()
+    .sort((a,b)=> (b.usedCount||0)-(a.usedCount||0) || byUpdatedDesc(a,b))
+    .forEach(m=>{
+      const opt = document.createElement("option");
+      opt.value = m.name;
+      dl.appendChild(opt);
+    });
+}
+function statusChip(status){
+  const s = (status||"").toLowerCase();
+  if(s==="confirmado" || s==="atendido") return "ok";
+  if(s==="pendente" || s==="remarcado") return "warn";
+  if(s==="faltou") return "bad";
+  return "";
+}
+function renderAppts(){
+  const list = $("apptList");
+  const empty = $("apptEmpty");
+  list.innerHTML = "";
+
+  const fp = safeText($("agFilterPatient").value).toLowerCase();
+  const fs = $("agFilterStatus").value;
+  const fd = $("agFilterDate").value;
+
+  const items = state.appts.slice().sort((a,b)=>{
+    const da = (a.date||"") + (a.time||"");
+    const db = (b.date||"") + (b.time||"");
+    return db.localeCompare(da);
+  }).filter(x=>{
+    if(fp && !(x.patient||"").toLowerCase().includes(fp)) return false;
+    if(fs && x.status!==fs) return false;
+    if(fd && x.date!==fd) return false;
+    return true;
+  });
+
+  empty.style.display = items.length ? "none" : "block";
+
+  items.forEach(ap=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    const chipClass = statusChip(ap.status);
+    div.innerHTML = `
+      <h3>${escapeHtml(ap.patient || "—")}</h3>
+      <p>${escapeHtml(ap.date || "")} ${escapeHtml(ap.time || "")} • ${escapeHtml(ap.notes || "")}</p>
+      <div class="meta">
+        <span class="chip ${chipClass}">${escapeHtml(ap.status || "—")}</span>
+        <span class="chip">ID: ${escapeHtml(ap.id.slice(-8))}</span>
+      </div>
+      <div class="rightTools">
+        <button class="primary" data-act="use">📌 Usar nos documentos</button>
+        <button data-act="del" class="danger">🗑️ Excluir</button>
+      </div>
+    `;
+    div.querySelector('[data-act="use"]').addEventListener("click", ()=>{
+      // Fill patient across modules
+      $("rxPatient").value = ap.patient || "";
+      $("fcPatient").value = ap.patient || "";
+      $("atPatient").value = ap.patient || "";
+      $("orPatient").value = ap.patient || "";
+      // Some helpful defaults
+      $("fcChief").value = ap.notes || $("fcChief").value;
+      toast("Paciente puxado para os documentos.");
+      // Jump to receituário (feels natural)
+      document.querySelector('.tab[data-tab="receita"]').click();
+    });
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.appts = state.appts.filter(x=>x.id!==ap.id);
+      saveState();
+      toast("Agendamento removido.");
+    });
+
+    list.appendChild(div);
+  });
+}
+
+function renderRxItems(){
+  const list = $("rxItems");
+  const empty = $("rxEmpty");
+  list.innerHTML = "";
+  const items = state.rxDraft.items || [];
+  empty.style.display = items.length ? "none" : "block";
+
+  items.forEach(it=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(it.medName)}</h3>
+      <p><b>Uso:</b> ${escapeHtml(it.dose || "—")}</p>
+      <p><b>Qtd:</b> ${escapeHtml(it.qty || "—")}</p>
+      <p class="muted">${escapeHtml(it.notes || "")}</p>
+      <div class="rightTools">
+        <button class="danger" data-act="del">🗑️ Remover</button>
+      </div>
+    `;
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.rxDraft.items = state.rxDraft.items.filter(x=>x.id!==it.id);
+      saveState();
+      toast("Item removido.");
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderFichas(){
+  const list = $("fcList");
+  const empty = $("fcEmpty");
+  list.innerHTML = "";
+  const q = safeText($("fcFilter").value).toLowerCase();
+
+  const items = state.fichas.filter(f=>{
+    if(!q) return true;
+    return (f.patient||"").toLowerCase().includes(q);
+  });
+
+  empty.style.display = items.length ? "none" : "block";
+
+  items.slice(0,30).forEach(f=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(f.patient)} <span class="chip">${escapeHtml(f.date||"")}</span></h3>
+      <p><b>Queixa:</b> ${escapeHtml(f.chief||"—")}</p>
+      <p class="muted"><b>Conduta:</b> ${escapeHtml(f.plan||"—")}</p>
+      <div class="rightTools">
+        <button class="primary" data-act="load">📌 Carregar</button>
+        <button class="danger" data-act="del">🗑️ Excluir</button>
+      </div>
+    `;
+    div.querySelector('[data-act="load"]').addEventListener("click", ()=>{
+      $("fcPatient").value = f.patient||"";
+      $("fcDate").value = f.date||"";
+      $("fcChief").value = f.chief||"";
+      $("fcPlan").value = f.plan||"";
+      $("fcHx").value = f.hx||"";
+      $("fcExam").value = f.exam||"";
+      $("fcEvol").value = f.evol||"";
+      toast("Ficha carregada.");
+    });
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.fichas = state.fichas.filter(x=>x.id!==f.id);
+      saveState();
+      toast("Ficha removida.");
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderOrItems(){
+  const list = $("orItems");
+  const empty = $("orEmpty");
+  list.innerHTML = "";
+  const items = state.orDraft.items || [];
+  empty.style.display = items.length ? "none" : "block";
+
+  items.forEach(it=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(it.name)}</h3>
+      <p class="muted"><b>Valor:</b> ${escapeHtml(it.value || "—")}</p>
+      <div class="rightTools">
+        <button class="danger" data-act="del">🗑️ Remover</button>
+      </div>
+    `;
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.orDraft.items = state.orDraft.items.filter(x=>x.id!==it.id);
+      saveState();
+      toast("Item removido.");
+    });
+    list.appendChild(div);
+  });
+}
+
+/* =======================
+   Document Builder (template with border + header + footer)
+======================= */
+function getPatient(name){
+  const n = safeText(name).toLowerCase();
+  return state.patients.find(p => (p.name||"").toLowerCase()===n) || null;
+}
+function nowStamp(){
+  const d = new Date();
+  const pad = (x)=> String(x).padStart(2,"0");
+  return `${d.toLocaleDateString("pt-BR")} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function docTemplate({title, patientName, dateStr, bodyHtml}){
+  const dent = state.dentist || {};
+  const p = getPatient(patientName) || {name: patientName||"", doc:"", birth:"", phone:""};
+  const addr = safeText(dent.addr) || "Endereço do profissional (configure na lateral).";
+  const stampRight = `
+    ${escapeHtml(dateStr || "")}<br>
+    <span class="muted">Gerado: ${escapeHtml(nowStamp())}</span>
+  `.trim();
+
+  return `
+    <div class="docPage">
+      <div class="docHeader">
+        <div class="topRow">
+          <div class="dent">
+            ${escapeHtml(dent.name || "Nome do dentista")}
+            <small>${escapeHtml(dent.reg || "CRO/Registro")} • ${escapeHtml(dent.phone || "Telefone")} • ${escapeHtml(dent.email || "E-mail")}</small>
+          </div>
+          <div class="stamp">
+            <b>${escapeHtml(title)}</b><br>
+            ${stampRight}
+          </div>
+        </div>
+
+        <div class="pat">
+          <div><b>Paciente</b>${escapeHtml(p.name || "—")}</div>
+          <div><b>Documento</b>${escapeHtml(p.doc || "—")}</div>
+          <div><b>Nascimento</b>${escapeHtml(p.birth || "—")}</div>
+          <div><b>Telefone</b>${escapeHtml(p.phone || "—")}</div>
+          <div style="grid-column: span 2"><b>Obs.</b>${escapeHtml((p.notes||"").slice(0,120) || "—")}</div>
+        </div>
+      </div>
+
+      <div class="docMain">
+        <h3>${escapeHtml(title)}</h3>
+        ${bodyHtml}
+      </div>
+
+      <div class="docFooter">
+        <div class="footGrid">
+          <div class="addr"><b>Endereço/Contato</b><br>${escapeHtml(addr).replace(/\n/g,"<br>")}</div>
+          <div class="sig">
+            <div class="line"></div>
+            Assinatura e carimbo
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function escapeHtml(str){
+  return (str ?? "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function buildRxDoc(){
+  const patient = safeText($("rxPatient").value) || state.rxDraft.patient;
+  const date = $("rxDate").value || state.rxDraft.date || "";
+  const general = safeText($("rxGeneral").value) || state.rxDraft.general || "";
+  const items = state.rxDraft.items || [];
+
+  const body = `
+    <div class="block">
+      <h4>Prescrição</h4>
+      ${items.length ? items.map((it, idx)=>`
+        <p><b>${idx+1}.</b> ${escapeHtml(it.medName)}${it.qty?` <span class="muted">(${escapeHtml(it.qty)})</span>`:""}
+${it.dose?`\n<b>Uso:</b> ${escapeHtml(it.dose)}`:""}
+${it.notes?`\n<b>Orientações:</b> ${escapeHtml(it.notes)}`:""}</p>
+        <div style="height:8px"></div>
+      `).join("") : `<p class="muted">Nenhum item adicionado.</p>`}
+    </div>
+    ${general ? `
+    <div class="block">
+      <h4>Observações gerais</h4>
+      <p>${escapeHtml(general)}</p>
+    </div>` : ""}
+  `;
+  return docTemplate({title:"Receituário", patientName: patient, dateStr: date, bodyHtml: body});
+}
+
+function buildFichaDoc(){
+  const patient = safeText($("fcPatient").value);
+  const date = $("fcDate").value || "";
+  const body = `
+    <div class="block"><h4>Queixa principal</h4><p>${escapeHtml($("fcChief").value || "—")}</p></div>
+    <div class="block"><h4>Procedimento / Conduta</h4><p>${escapeHtml($("fcPlan").value || "—")}</p></div>
+    <div class="block"><h4>Anamnese / Histórico</h4><p>${escapeHtml($("fcHx").value || "—")}</p></div>
+    <div class="block"><h4>Exame clínico</h4><p>${escapeHtml($("fcExam").value || "—")}</p></div>
+    <div class="block"><h4>Evolução / Observações</h4><p>${escapeHtml($("fcEvol").value || "—")}</p></div>
+  `;
+  return docTemplate({title:"Ficha Clínica", patientName: patient, dateStr: date, bodyHtml: body});
+}
+
+function buildAtestadoDoc(){
+  const patient = safeText($("atPatient").value);
+  const date = $("atDate").value || "";
+  const days = safeText($("atDays").value);
+  const hours = safeText($("atHours").value);
+  let text = safeText($("atText").value);
+
+  if(!text){
+    text = "Atesto para os devidos fins que o(a) paciente acima identificado(a) esteve sob atendimento odontológico nesta data, necessitando de afastamento de suas atividades pelo período informado, a contar de hoje.";
+  }
+
+  const details = [];
+  if(days) details.push(`<p><b>Período:</b> ${escapeHtml(days)} dia(s).</p>`);
+  if(hours) details.push(`<p><b>Horário:</b> ${escapeHtml(hours)}.</p>`);
+
+  const body = `
+    <div class="block">
+      <h4>Declaração</h4>
+      <p>${escapeHtml(text)}</p>
+      ${details.join("")}
+    </div>
+  `;
+  return docTemplate({title:"Atestado", patientName: patient, dateStr: date, bodyHtml: body});
+}
+
+function buildOrcDoc(){
+  const patient = safeText($("orPatient").value) || state.orDraft.patient;
+  const date = $("orDate").value || state.orDraft.date || "";
+  const notes = safeText($("orNotes").value) || state.orDraft.notes || "";
+  const items = state.orDraft.items || [];
+
+  const body = `
+    <div class="block">
+      <h4>Itens</h4>
+      ${items.length ? items.map((it, idx)=>`
+        <p><b>${idx+1}.</b> ${escapeHtml(it.name)} — <b>${escapeHtml(it.value || "—")}</b></p>
+      `).join("") : `<p class="muted">Nenhum item adicionado.</p>`}
+    </div>
+    ${notes ? `
+    <div class="block">
+      <h4>Condições / Observações</h4>
+      <p>${escapeHtml(notes)}</p>
+    </div>` : ""}
+  `;
+  return docTemplate({title:"Orçamento", patientName: patient, dateStr: date, bodyHtml: body});
+}
+
+/* =======================
+   Preview / Print
+======================= */
+const overlay = $("printOverlay");
+$("btnOverlayClose").addEventListener("click", ()=>overlay.classList.remove("show"));
+$("btnOverlayPrint").addEventListener("click", ()=>{
+  // print currently previewed content
+  printNow($("printPreview").innerHTML);
+});
+function openPreview(html){
+  $("printPreview").innerHTML = html;
+  $("printTitle").textContent = "Pré-visualização";
+  $("printSubtitle").textContent = "Borda com topo/rodapé • pronto pra PDF";
+  overlay.classList.add("show");
+}
+function printNow(html){
+  // Put into dedicated print area then call print
+  const area = $("printArea");
+  area.innerHTML = html;
+  // Close overlay to avoid any print weirdness
+  overlay.classList.remove("show");
+  setTimeout(()=>window.print(), 50);
+}
+
+/* =======================
+   Backup / Reset
+======================= */
+$("btnBackup").addEventListener("click", ()=>{
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `btx-docs-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Backup exportado.");
+});
+$("backupFile").addEventListener("change", async (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  try{
+    const text = await f.text();
+    const obj = JSON.parse(text);
+    // minimal validation
+    if(!obj || typeof obj !== "object") throw new Error("arquivo inválido");
+    Object.assign(state, defaultState(), obj);
+    saveState();
+    toast("Backup importado com sucesso.");
+  }catch(err){
+    toast("Falha ao importar backup (JSON inválido).");
+  }finally{
+    e.target.value = "";
+  }
+});
+$("btnReset").addEventListener("click", ()=>{
+  const ok = confirm("Tem certeza que quer zerar TUDO? Isso apaga agenda, pacientes, meds e documentos.");
+  if(!ok) return;
+  localStorage.removeItem(KEY);
+  location.reload();
+});
+
+/* Quick print: prints what is active (most useful) */
+$("btnQuickPrint").addEventListener("click", ()=>{
+  const active = document.querySelector(".tab.active")?.dataset?.tab || "agenda";
+  if(active==="receita") return printNow(buildRxDoc());
+  if(active==="ficha") return printNow(buildFichaDoc());
+  if(active==="atestado") return printNow(buildAtestadoDoc());
+  if(active==="orcamento") return printNow(buildOrcDoc());
+  toast("Dica: para imprimir, vá em Receita/Ficha/Atestado/Orçamento.");
+});
+
+/* =======================
+   Initial fill (drafts)
+======================= */
+function hydrateDrafts(){
+  // RX
+  $("rxPatient").value = state.rxDraft.patient || "";
+  if(state.rxDraft.date) $("rxDate").value = state.rxDraft.date;
+  $("rxGeneral").value = state.rxDraft.general || "";
+
+  // OR
+  $("orPatient").value = state.orDraft.patient || "";
+  if(state.orDraft.date) $("orDate").value = state.orDraft.date;
+  $("orNotes").value = state.orDraft.notes || "";
+}
+hydrateDrafts();
+refreshAll();
+renderRxItems();
+renderOrItems();
+
+// Keep drafts in sync
+["rxPatient","rxDate","rxGeneral"].forEach(id=>{
+  $(id).addEventListener("input", ()=>{
+    state.rxDraft.patient = safeText($("rxPatient").value);
+    state.rxDraft.date = $("rxDate").value || "";
+    state.rxDraft.general = safeText($("rxGeneral").value);
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+});
+["orPatient","orDate","orNotes"].forEach(id=>{
+  $(id).addEventListener("input", ()=>{
+    state.orDraft.patient = safeText($("orPatient").value);
+    state.orDraft.date = $("orDate").value || "";
+    state.orDraft.notes = safeText($("orNotes").value);
+    localStorage.setItem(KEY, JSON.stringify(state));
+  });
+});
+</script>
 </body>
 </html>
