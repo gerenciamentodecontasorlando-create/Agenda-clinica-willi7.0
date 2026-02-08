@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BTX Docs • Gerador de Documentos Clínicos</title>
+  <meta name="theme-color" content="#2a63ff" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>BTX Docs • PWA</title>
+
   <style>
     :root{
       --bg:#f6f8fb;
@@ -30,7 +35,6 @@
                   var(--bg);
       color:var(--text);
     }
-    a{color:inherit}
     .wrap{max-width:1200px;margin:0 auto;padding:18px}
     .topbar{
       display:flex; gap:12px; align-items:center; justify-content:space-between;
@@ -40,19 +44,14 @@
       box-shadow: var(--shadow);
       position:sticky; top:10px; z-index:20;
     }
-    .brand{
-      display:flex; gap:12px; align-items:center;
-    }
+    .brand{display:flex; gap:12px; align-items:center;}
     .logo{
       width:42px;height:42px;border-radius:14px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       box-shadow: 0 12px 22px rgba(42,99,255,.25);
       position:relative;
     }
-    .logo:after{
-      content:""; position:absolute; inset:9px;
-      border-radius:10px; border:1px solid rgba(255,255,255,.55);
-    }
+    .logo:after{content:""; position:absolute; inset:9px; border-radius:10px; border:1px solid rgba(255,255,255,.55);}
     .brand h1{font-size:14px;margin:0;line-height:1.1}
     .brand p{margin:0;color:var(--muted);font-size:12px}
     .actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
@@ -99,9 +98,7 @@
       border-bottom:1px solid var(--line);
       background: linear-gradient(180deg, rgba(42,99,255,.06), transparent);
     }
-    .panelHead h2{
-      margin:0; font-size:13px; letter-spacing:.2px;
-    }
+    .panelHead h2{margin:0; font-size:13px; letter-spacing:.2px;}
     .panelHead p{margin:6px 0 0 0; font-size:12px; color:var(--muted)}
     .panelBody{padding:12px 14px 14px 14px}
     .tabs{
@@ -145,12 +142,8 @@
       border-color: rgba(42,99,255,.55);
       box-shadow: 0 0 0 4px rgba(42,99,255,.12);
     }
-    .hint{
-      font-size:11px; color:var(--muted); margin-top:6px; line-height:1.25
-    }
-    .mini{
-      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-    }
+    .hint{font-size:11px; color:var(--muted); margin-top:6px; line-height:1.25}
+    .mini{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
     .chip{
       padding:6px 10px;
       border-radius: 999px;
@@ -163,9 +156,7 @@
     .chip.ok{border-color: rgba(22,163,74,.35); background: rgba(22,163,74,.08); color:#126b33}
     .chip.warn{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.10); color:#8a5a04}
     .chip.bad{border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.10); color:#8b1f1f}
-    .list{
-      display:flex; flex-direction:column; gap:10px;
-    }
+    .list{display:flex; flex-direction:column; gap:10px;}
     .card{
       background:#fff;
       border:1px solid var(--line);
@@ -175,15 +166,10 @@
     }
     .card h3{margin:0 0 6px 0; font-size:13px}
     .card p{margin:0; font-size:12px; color:var(--muted); line-height:1.25}
-    .card .meta{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
-    .split{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
-    }
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
     @media (max-width: 850px){ .split{grid-template-columns: 1fr;} }
     .hr{height:1px;background:var(--line);margin:12px 0}
-    .rightTools{
-      display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
-    }
+    .rightTools{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
     .kbd{
       font-family: var(--mono);
       font-size: 11px;
@@ -196,13 +182,8 @@
       font-weight:800;
     }
     .small{font-size:11px;color:var(--muted)}
-    .dangerText{color:#8b1f1f;font-weight:800}
-    .muted{color:var(--muted)}
-    .titleLine{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-    }
+    .titleLine{display:flex; align-items:flex-end; justify-content:space-between; gap:10px;}
     .titleLine h2{margin:0;font-size:14px}
-    .titleLine .small{margin:0}
     .empty{
       padding:16px;
       border:1px dashed var(--line);
@@ -212,6 +193,61 @@
       font-size:12px;
       line-height:1.25;
     }
+
+    /* ======= Calendar (Agenda) ======= */
+    .calWrap{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 22px rgba(11,18,32,.06);
+      overflow:hidden;
+    }
+    .calHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(42,99,255,.08), rgba(0,194,255,.06));
+    }
+    .calHead strong{font-size:12px}
+    .calGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:0;
+      padding:10px;
+    }
+    .dow{
+      font-size:10px;
+      color:var(--muted);
+      font-weight:900;
+      text-align:center;
+      padding:6px 0;
+    }
+    .day{
+      position:relative;
+      height:44px;
+      border-radius: 12px;
+      margin:2px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-weight:900;
+      color:#0b1220;
+      border:1px solid transparent;
+      user-select:none;
+    }
+    .day:hover{border-color: rgba(42,99,255,.25); background: rgba(42,99,255,.06);}
+    .day.muted{color:#9aa7bb; font-weight:800;}
+    .day.today{border-color: rgba(42,99,255,.55); background: rgba(42,99,255,.10);}
+    .day.selected{border-color: rgba(0,194,255,.65); background: rgba(0,194,255,.12);}
+    .dot{
+      position:absolute; bottom:6px; left:50%; transform:translateX(-50%);
+      width:18px; height:6px; border-radius: 99px;
+      background: rgba(22,163,74,.20);
+      border:1px solid rgba(22,163,74,.35);
+    }
+    .dot.warn{background: rgba(245,158,11,.18); border-color: rgba(245,158,11,.35);}
+    .dot.bad{background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.35);}
 
     /* ---------- PRINT / DOCUMENT TEMPLATE ---------- */
     .printOverlay{
@@ -243,12 +279,12 @@
       background: #f3f6fb;
     }
     .docPage{
-      width: 794px; /* ~A4 at 96dpi-ish */
+      width: 794px;
       min-height: 1123px;
       margin: 0 auto;
       background:#fff;
       border-radius: 14px;
-      border: 2px solid #111827; /* borda elegante e firme */
+      border: 2px solid #111827;
       box-shadow: 0 12px 30px rgba(11,18,32,.12);
       overflow:hidden;
       display:flex;
@@ -260,16 +296,9 @@
       border-bottom: 1px solid #111827;
       background: linear-gradient(180deg, rgba(42,99,255,.09), rgba(0,194,255,.06));
     }
-    .docHeader .topRow{
-      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
-    }
-    .docHeader .dent{
-      font-weight:900; font-size:14px;
-      letter-spacing:.2px;
-    }
-    .docHeader .dent small{
-      display:block; font-weight:700; color:#334155; margin-top:4px; font-size:11px;
-    }
+    .docHeader .topRow{display:flex; justify-content:space-between; gap:12px; align-items:flex-start;}
+    .docHeader .dent{font-weight:900; font-size:14px; letter-spacing:.2px;}
+    .docHeader .dent small{display:block; font-weight:700; color:#334155; margin-top:4px; font-size:11px;}
     .docHeader .stamp{
       font-family: var(--mono);
       font-size: 11px;
@@ -293,21 +322,9 @@
       font-size:12px;
     }
     .docHeader .pat div b{display:block; font-size:11px; color:#334155}
-    .docMain{
-      padding:16px;
-      flex:1;
-    }
-    .docMain h3{
-      margin:0 0 10px 0;
-      font-size:16px;
-      letter-spacing:.3px;
-    }
-    .docMain .block{
-      border:1px solid rgba(17,24,39,.22);
-      border-radius: 12px;
-      padding:12px;
-      margin: 10px 0;
-    }
+    .docMain{padding:16px; flex:1;}
+    .docMain h3{margin:0 0 10px 0; font-size:16px; letter-spacing:.3px;}
+    .docMain .block{border:1px solid rgba(17,24,39,.22); border-radius: 12px; padding:12px; margin: 10px 0;}
     .docMain .block h4{margin:0 0 8px 0; font-size:12px; color:#0b1220}
     .docMain .block p{margin:0; font-size:12px; color:#0b1220; line-height:1.35; white-space:pre-wrap}
     .docFooter{
@@ -315,51 +332,25 @@
       border-top: 1px solid #111827;
       background: rgba(248,250,252,.9);
     }
-    .docFooter .footGrid{
-      display:grid;
-      grid-template-columns: 1.4fr .6fr;
-      gap:12px;
-      align-items:end;
-    }
-    .docFooter .addr{
-      font-size:11px; color:#0b1220; line-height:1.25;
-    }
-    .sig{
-      text-align:right;
-      font-size:11px;
-      color:#0b1220;
-    }
-    .sig .line{
-      height:1px; background:#0b1220; margin:18px 0 6px 0;
-    }
+    .docFooter .footGrid{display:grid; grid-template-columns: 1.4fr .6fr; gap:12px; align-items:end;}
+    .docFooter .addr{font-size:11px; color:#0b1220; line-height:1.25;}
+    .sig{text-align:right; font-size:11px; color:#0b1220;}
+    .sig .line{height:1px; background:#0b1220; margin:18px 0 6px 0;}
 
-    /* Print styling */
     @media print{
       body{background:#fff}
       .topbar,.side,.tabs,.main .panelHead,.main .panelBody:not(.printable), .printOverlay{display:none !important;}
       .printArea{display:block !important;}
-      .docPage{
-        width:auto; min-height:auto;
-        border-radius: 0;
-        box-shadow:none;
-        page-break-after: always;
-      }
-      @page{
-        size: A4;
-        margin: 10mm;
-      }
+      .docPage{width:auto; min-height:auto; border-radius:0; box-shadow:none; page-break-after: always;}
+      @page{size:A4; margin:10mm;}
     }
     .printArea{display:none;}
     .toast{
       position:fixed; right:14px; bottom:14px;
-      background:#0b1220;
-      color:#fff;
-      padding:10px 12px;
-      border-radius: 14px;
+      background:#0b1220; color:#fff;
+      padding:10px 12px; border-radius: 14px;
       box-shadow: 0 20px 50px rgba(0,0,0,.25);
-      font-size:12px;
-      display:none;
-      z-index:60;
+      font-size:12px; display:none; z-index:60;
       max-width: min(420px, 92vw);
     }
     .toast.show{display:block}
@@ -372,11 +363,12 @@
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
         <div>
-          <h1>BTX Docs • Gerador Clínico</h1>
-          <p>Agenda + documentos com memória offline • layout claro & tecnológico</p>
+          <h1>BTX Docs • PWA</h1>
+          <p>Agenda com calendário + documentos clínicos offline</p>
         </div>
       </div>
       <div class="actions">
+        <button class="primary" id="btnInstall" style="display:none">⬇️ Instalar</button>
         <button class="primary" id="btnBackup">📦 Exportar backup</button>
         <label class="btn" style="cursor:pointer">
           📥 Importar backup
@@ -388,11 +380,11 @@
     </div>
 
     <div class="grid">
-      <!-- LEFT: Config + Biblioteca -->
+      <!-- LEFT -->
       <aside class="side">
         <div class="panelHead">
           <h2>Configuração do profissional</h2>
-          <p>Esses dados vão automaticamente para todos os documentos.</p>
+          <p>Esses dados vão para todos os documentos.</p>
         </div>
         <div class="panelBody">
           <div class="row">
@@ -420,7 +412,6 @@
           <div style="margin-top:10px">
             <label>Endereço (rodapé do documento)</label>
             <textarea id="dentAddr" placeholder="Rua, nº, bairro, cidade/UF, CEP."></textarea>
-            <div class="hint">Dica: coloque também redes/website se quiser. Vai no rodapé.</div>
           </div>
 
           <div class="hr"></div>
@@ -491,14 +482,10 @@
             <button class="primary" id="btnSavePatient">💾 Salvar/Atualizar paciente</button>
             <button id="btnClearPatient">🧼 Limpar</button>
           </div>
-
-          <div class="hint">
-            <span class="kbd">Auto</span> Tudo que você salva aqui vira autocomplete nos documentos e na agenda.
-          </div>
         </div>
       </aside>
 
-      <!-- RIGHT: App -->
+      <!-- RIGHT -->
       <main class="main">
         <div class="tabs" id="tabs">
           <div class="tab active" data-tab="agenda">📅 Agenda</div>
@@ -511,7 +498,7 @@
         <div class="panelHead">
           <div class="titleLine">
             <h2 id="viewTitle">Agenda</h2>
-            <p class="small" id="viewSub">Cadastre atendimentos, status, e use como memória clínica.</p>
+            <p class="small" id="viewSub">Calendário mensal + lista + memória</p>
           </div>
         </div>
 
@@ -519,10 +506,27 @@
           <!-- AGENDA -->
           <section id="tab-agenda">
             <div class="split">
+
               <div>
-                <div class="card">
+                <!-- CALENDAR -->
+                <div class="calWrap">
+                  <div class="calHead">
+                    <button id="calPrev">◀</button>
+                    <div style="text-align:center;flex:1">
+                      <strong id="calTitle">Mês</strong>
+                      <div class="small" id="calSubtitle">Clique num dia pra filtrar</div>
+                    </div>
+                    <button id="calNext">▶</button>
+                    <button class="primary" id="calToday">Hoje</button>
+                  </div>
+
+                  <div class="calGrid" id="calDow"></div>
+                  <div class="calGrid" id="calDays"></div>
+                </div>
+
+                <div class="card" style="margin-top:10px">
                   <h3>Novo agendamento</h3>
-                  <p>Salva offline e aparece na lista abaixo.</p>
+                  <p>Selecione um dia no calendário e pronto.</p>
 
                   <div class="row" style="margin-top:10px">
                     <div>
@@ -538,7 +542,7 @@
                   <div class="row" style="margin-top:10px">
                     <div>
                       <label>Paciente</label>
-                      <input id="agPatient" placeholder="Digite e selecione (autocomplete)" list="patientsList" />
+                      <input id="agPatient" placeholder="Digite e selecione" list="patientsList" />
                     </div>
                     <div>
                       <label>Status</label>
@@ -554,7 +558,7 @@
 
                   <div style="margin-top:10px">
                     <label>Motivo / Observações</label>
-                    <textarea id="agNotes" placeholder="Ex.: dor, retorno, limpeza, canal, etc."></textarea>
+                    <textarea id="agNotes" placeholder="Ex.: dor, retorno, limpeza, canal..."></textarea>
                   </div>
 
                   <div class="rightTools">
@@ -563,13 +567,12 @@
                   </div>
 
                   <div class="hint">
-                    Dica visionária: usa a agenda como “memória do consultório”. Depois você filtra por paciente e vê tudo.
+                    Bônus: dias com agendamento aparecem “marcados” no calendário.
                   </div>
                 </div>
 
                 <div class="card" style="margin-top:10px">
-                  <h3>Busca rápida</h3>
-                  <p>Filtra por paciente, data, status.</p>
+                  <h3>Filtro</h3>
                   <div class="row" style="margin-top:10px">
                     <div>
                       <label>Paciente</label>
@@ -588,7 +591,7 @@
                     </div>
                   </div>
                   <div style="margin-top:10px">
-                    <label>Data (opcional)</label>
+                    <label>Data (clicando no calendário já preenche)</label>
                     <input id="agFilterDate" type="date" />
                   </div>
                   <div class="rightTools">
@@ -601,14 +604,15 @@
               <div>
                 <div class="card">
                   <h3>Lista de agendamentos</h3>
-                  <p>Toque em um item pra puxar dados para documentos (receita/ficha/atestado/orçamento).</p>
+                  <p>Toque num item pra puxar dados para documentos.</p>
                   <div class="hr"></div>
                   <div id="apptList" class="list"></div>
                   <div id="apptEmpty" class="empty" style="display:none">
-                    Ainda não tem agendamento. Crie um ali do lado e pronto.
+                    Nenhum agendamento nesse filtro/dia.
                   </div>
                 </div>
               </div>
+
             </div>
           </section>
 
@@ -617,7 +621,6 @@
             <div class="split">
               <div class="card">
                 <h3>Receita (montagem rápida)</h3>
-                <p>Seleciona o paciente e adiciona medicamentos da biblioteca.</p>
 
                 <div class="row" style="margin-top:10px">
                   <div>
@@ -635,35 +638,34 @@
                 <div class="row">
                   <div>
                     <label>Buscar medicamento salvo</label>
-                    <input id="rxMedSearch" placeholder="Digite: amoxi, dipirona, ibup..." list="medsList" />
+                    <input id="rxMedSearch" placeholder="Digite..." list="medsList" />
                     <datalist id="medsList"></datalist>
-                    <div class="hint">Ele puxa posologia e orientação automaticamente.</div>
                   </div>
                   <div>
-                    <label>Qtd/Detalhe extra (opcional)</label>
-                    <input id="rxQty" placeholder="Ex.: 1 caixa / 20 comp." />
+                    <label>Qtd/Detalhe extra</label>
+                    <input id="rxQty" placeholder="Ex.: 1 caixa" />
                   </div>
                 </div>
 
                 <div style="margin-top:10px">
                   <label>Posologia / Modo de uso</label>
-                  <input id="rxDose" placeholder="Vai preencher automático, mas você pode editar" />
+                  <input id="rxDose" placeholder="Pode editar" />
                 </div>
 
                 <div style="margin-top:10px">
                   <label>Orientações</label>
-                  <textarea id="rxNotes" placeholder="Vai preencher automático, mas você pode editar"></textarea>
+                  <textarea id="rxNotes" placeholder="Pode editar"></textarea>
                 </div>
 
                 <div class="rightTools">
-                  <button class="primary" id="btnRxAddItem">➕ Adicionar à receita</button>
+                  <button class="primary" id="btnRxAddItem">➕ Adicionar</button>
                   <button id="btnRxClearItem">🧼 Limpar item</button>
                 </div>
 
                 <div class="hr"></div>
 
-                <label>Observações gerais (opcional)</label>
-                <textarea id="rxGeneral" placeholder="Ex.: retornar em 7 dias; se alergia, suspender e procurar atendimento..."></textarea>
+                <label>Observações gerais</label>
+                <textarea id="rxGeneral" placeholder="Ex.: retornar em 7 dias..."></textarea>
 
                 <div class="rightTools">
                   <button class="ok" id="btnRxPreview">👁️ Pré-visualizar</button>
@@ -674,11 +676,10 @@
 
               <div class="card">
                 <h3>Itens da receita</h3>
-                <p>Lista do que vai sair no documento.</p>
                 <div class="hr"></div>
                 <div id="rxItems" class="list"></div>
                 <div id="rxEmpty" class="empty" style="display:none">
-                  Adicione medicamentos usando a busca ali do lado.
+                  Adicione medicamentos usando a busca.
                 </div>
               </div>
             </div>
@@ -689,12 +690,11 @@
             <div class="split">
               <div class="card">
                 <h3>Ficha clínica</h3>
-                <p>Modelo “limpo” e direto. Salva por paciente.</p>
 
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Paciente</label>
-                    <input id="fcPatient" list="patientsList" placeholder="Selecione ou digite" />
+                    <input id="fcPatient" list="patientsList" />
                   </div>
                   <div>
                     <label>Data</label>
@@ -705,27 +705,25 @@
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Queixa principal</label>
-                    <input id="fcChief" placeholder="Ex.: dor no molar superior" />
+                    <input id="fcChief" />
                   </div>
                   <div>
                     <label>Procedimento / Conduta</label>
-                    <input id="fcPlan" placeholder="Ex.: restauração / profilaxia / canal" />
+                    <input id="fcPlan" />
                   </div>
                 </div>
 
                 <div style="margin-top:10px">
                   <label>Anamnese / Histórico</label>
-                  <textarea id="fcHx" placeholder="Doenças, cirurgias, medicações, alergias, etc."></textarea>
+                  <textarea id="fcHx"></textarea>
                 </div>
-
                 <div style="margin-top:10px">
                   <label>Exame clínico</label>
-                  <textarea id="fcExam" placeholder="Achados, sinais, exames complementares..."></textarea>
+                  <textarea id="fcExam"></textarea>
                 </div>
-
                 <div style="margin-top:10px">
                   <label>Evolução / Observações</label>
-                  <textarea id="fcEvol" placeholder="Evolução, retorno, orientação pós..."></textarea>
+                  <textarea id="fcEvol"></textarea>
                 </div>
 
                 <div class="rightTools">
@@ -734,13 +732,10 @@
                   <button class="primary" id="btnFcPrint">🖨️ Imprimir/Salvar PDF</button>
                   <button class="danger" id="btnFcClear">🧨 Limpar</button>
                 </div>
-
-                <div class="hint">Dica: você pode puxar dados clicando num agendamento na agenda.</div>
               </div>
 
               <div class="card">
                 <h3>Histórico de fichas</h3>
-                <p>Filtra por paciente.</p>
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Filtro paciente</label>
@@ -753,9 +748,7 @@
                 </div>
                 <div class="hr"></div>
                 <div id="fcList" class="list"></div>
-                <div id="fcEmpty" class="empty" style="display:none">
-                  Nenhuma ficha salva ainda.
-                </div>
+                <div id="fcEmpty" class="empty" style="display:none">Nenhuma ficha salva.</div>
               </div>
             </div>
           </section>
@@ -765,12 +758,11 @@
             <div class="split">
               <div class="card">
                 <h3>Atestado</h3>
-                <p>Gera um documento elegante com assinatura no rodapé.</p>
 
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Paciente</label>
-                    <input id="atPatient" list="patientsList" placeholder="Selecione ou digite" />
+                    <input id="atPatient" list="patientsList" />
                   </div>
                   <div>
                     <label>Data</label>
@@ -781,7 +773,7 @@
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Dias de afastamento</label>
-                    <input id="atDays" type="number" min="0" placeholder="Ex.: 2" />
+                    <input id="atDays" type="number" min="0" />
                   </div>
                   <div>
                     <label>Horário (opcional)</label>
@@ -791,8 +783,7 @@
 
                 <div style="margin-top:10px">
                   <label>Texto do atestado</label>
-                  <textarea id="atText" placeholder="Ex.: Atesto para os devidos fins que..."></textarea>
-                  <div class="hint">Se deixar vazio, eu gero um texto padrão.</div>
+                  <textarea id="atText" placeholder="Se vazio, uso um texto padrão."></textarea>
                 </div>
 
                 <div class="rightTools">
@@ -803,11 +794,10 @@
               </div>
 
               <div class="card">
-                <h3>Modelo padrão inteligente</h3>
-                <p class="muted">Gera automaticamente se você não escrever o texto.</p>
+                <h3>Modelo padrão</h3>
                 <div class="hr"></div>
                 <div class="empty">
-                  “Atesto para os devidos fins que o(a) paciente acima identificado(a) esteve sob atendimento odontológico nesta data, necessitando de afastamento de suas atividades pelo período informado, a contar de hoje.”
+                  “Atesto para os devidos fins que o(a) paciente acima identificado(a) esteve sob atendimento odontológico nesta data, necessitando de afastamento pelo período informado, a contar de hoje.”
                 </div>
               </div>
             </div>
@@ -818,12 +808,11 @@
             <div class="split">
               <div class="card">
                 <h3>Orçamento</h3>
-                <p>Texto livre + itens, sem soma automática (como você gosta), mas organizado.</p>
 
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Paciente</label>
-                    <input id="orPatient" list="patientsList" placeholder="Selecione ou digite" />
+                    <input id="orPatient" list="patientsList" />
                   </div>
                   <div>
                     <label>Data</label>
@@ -834,7 +823,7 @@
                 <div class="row" style="margin-top:10px">
                   <div>
                     <label>Item (procedimento)</label>
-                    <input id="orItemName" placeholder="Ex.: Restauração resina" />
+                    <input id="orItemName" />
                   </div>
                   <div>
                     <label>Valor (texto)</label>
@@ -849,7 +838,7 @@
 
                 <div style="margin-top:10px">
                   <label>Condições / Observações</label>
-                  <textarea id="orNotes" placeholder="Ex.: validade 7 dias; entrada + parcelas; materiais inclusos..."></textarea>
+                  <textarea id="orNotes"></textarea>
                 </div>
 
                 <div class="rightTools">
@@ -861,12 +850,9 @@
 
               <div class="card">
                 <h3>Itens do orçamento</h3>
-                <p>O que vai sair no documento.</p>
                 <div class="hr"></div>
                 <div id="orItems" class="list"></div>
-                <div id="orEmpty" class="empty" style="display:none">
-                  Adicione itens do orçamento.
-                </div>
+                <div id="orEmpty" class="empty" style="display:none">Adicione itens do orçamento.</div>
               </div>
             </div>
           </section>
@@ -882,7 +868,7 @@
       <div class="printTop">
         <div>
           <strong id="printTitle">Documento</strong>
-          <div class="muted" id="printSubtitle">Pré-visualização com borda e topo/rodapé</div>
+          <div class="muted" id="printSubtitle">Borda + topo/rodapé</div>
         </div>
         <div class="mini">
           <button id="btnOverlayPrint" class="primary">🖨️ Imprimir/PDF</button>
@@ -893,16 +879,40 @@
     </div>
   </div>
 
-  <!-- Hidden print area (used by window.print) -->
   <div class="printArea" id="printArea"></div>
-
   <div class="toast" id="toast"></div>
 
 <script>
 /* =======================
+   PWA install + SW
+======================= */
+let deferredPrompt = null;
+const btnInstall = document.getElementById("btnInstall");
+
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  btnInstall.style.display = "inline-flex";
+});
+
+btnInstall.addEventListener("click", async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  btnInstall.style.display = "none";
+});
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
+
+/* =======================
    Storage
 ======================= */
-const KEY = "btx_docs_v1";
+const KEY = "btx_docs_pwa_v2";
 const state = loadState();
 
 function loadState(){
@@ -918,12 +928,13 @@ function loadState(){
 function defaultState(){
   return {
     dentist: { name:"", reg:"", phone:"", email:"", addr:"" },
-    meds: [], // {id,name,form,dose,notes,usedCount,updatedAt}
-    patients: [], // {id,name,doc,birth,phone,notes,updatedAt}
-    appts: [], // {id,date,time,patient,status,notes,createdAt,updatedAt}
+    meds: [],
+    patients: [],
+    appts: [],
     rxDraft: { patient:"", date:"", items:[], general:"" },
-    fichas: [], // {id,patient,date,chief,plan,hx,exam,evol,createdAt}
-    orDraft: { patient:"", date:"", items:[], notes:"" }
+    fichas: [],
+    orDraft: { patient:"", date:"", items:[], notes:"" },
+    calendar: { year: null, month: null, selectedDate: "" }
   };
 }
 function saveState(){
@@ -948,8 +959,7 @@ function setTodayIfEmpty(inputId){
   const el = $(inputId);
   if(!el.value){
     const d = new Date();
-    const iso = d.toISOString().slice(0,10);
-    el.value = iso;
+    el.value = d.toISOString().slice(0,10);
   }
 }
 function safeText(v){ return (v ?? "").toString().trim(); }
@@ -964,16 +974,15 @@ tabsEl.addEventListener("click", (e)=>{
   if(!t) return;
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   t.classList.add("active");
-  const name = t.dataset.tab;
-  showTab(name);
+  showTab(t.dataset.tab);
 });
 function showTab(name){
   const map = {
-    agenda: ["Agenda","Cadastre atendimentos, status, e use como memória clínica."],
-    receita: ["Receituário","Biblioteca de medicamentos + impressão elegante."],
-    ficha: ["Ficha clínica","Salva por paciente e permite histórico."],
-    atestado: ["Atestado","Documento rápido com assinatura e rodapé."],
-    orcamento: ["Orçamento","Itens + condições, organizado e profissional."]
+    agenda: ["Agenda","Calendário mensal + lista + memória"],
+    receita: ["Receituário","Biblioteca de medicamentos + impressão"],
+    ficha: ["Ficha clínica","Salva por paciente e histórico"],
+    atestado: ["Atestado","Documento rápido e elegante"],
+    orcamento: ["Orçamento","Itens + condições, organizado"]
   };
   $("viewTitle").textContent = map[name][0];
   $("viewSub").textContent = map[name][1];
@@ -997,7 +1006,7 @@ function showTab(name){
 });
 
 /* =======================
-   Meds library
+   Meds
 ======================= */
 $("btnAddMed").addEventListener("click", ()=>{
   const name = safeText($("medName").value);
@@ -1006,21 +1015,12 @@ $("btnAddMed").addEventListener("click", ()=>{
   const dose = safeText($("medDose").value);
   const notes = safeText($("medNotes").value);
 
-  // If exists (same name), update it
   const existing = state.meds.find(m => m.name.toLowerCase() === name.toLowerCase());
   if(existing){
-    existing.form = form;
-    existing.dose = dose;
-    existing.notes = notes;
-    existing.updatedAt = Date.now();
+    existing.form=form; existing.dose=dose; existing.notes=notes; existing.updatedAt=Date.now();
     toast("Medicamento atualizado.");
   }else{
-    state.meds.push({
-      id: uid("med"),
-      name, form, dose, notes,
-      usedCount: 0,
-      updatedAt: Date.now()
-    });
+    state.meds.push({ id: uid("med"), name, form, dose, notes, usedCount:0, updatedAt:Date.now() });
     toast("Medicamento salvo.");
   }
   saveState();
@@ -1028,12 +1028,8 @@ $("btnAddMed").addEventListener("click", ()=>{
 });
 $("btnClearMed").addEventListener("click", ()=>clearMedFields(true));
 function clearMedFields(clearAll){
-  $("medName").value = "";
-  if(clearAll){
-    $("medForm").value = "";
-    $("medDose").value = "";
-    $("medNotes").value = "";
-  }
+  $("medName").value="";
+  if(clearAll){ $("medForm").value=""; $("medDose").value=""; $("medNotes").value=""; }
 }
 
 /* =======================
@@ -1049,15 +1045,10 @@ $("btnSavePatient").addEventListener("click", ()=>{
 
   const existing = state.patients.find(p => p.name.toLowerCase() === name.toLowerCase());
   if(existing){
-    existing.doc = doc; existing.birth = birth; existing.phone = phone; existing.notes = notes;
-    existing.updatedAt = Date.now();
+    existing.doc=doc; existing.birth=birth; existing.phone=phone; existing.notes=notes; existing.updatedAt=Date.now();
     toast("Paciente atualizado.");
   }else{
-    state.patients.push({
-      id: uid("pat"),
-      name, doc, birth, phone, notes,
-      updatedAt: Date.now()
-    });
+    state.patients.push({ id: uid("pat"), name, doc, birth, phone, notes, updatedAt: Date.now() });
     toast("Paciente salvo.");
   }
   saveState();
@@ -1067,9 +1058,153 @@ $("btnClearPatient").addEventListener("click", ()=>{
 });
 
 /* =======================
+   Calendar Engine (Agenda)
+======================= */
+const DOW = ["DOM","SEG","TER","QUA","QUI","SEX","SÁB"];
+
+function initCalendar(){
+  const now = new Date();
+  if(state.calendar.year == null) state.calendar.year = now.getFullYear();
+  if(state.calendar.month == null) state.calendar.month = now.getMonth(); // 0-11
+  if(!state.calendar.selectedDate) state.calendar.selectedDate = now.toISOString().slice(0,10);
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderCalendar();
+}
+function ymd(dateObj){
+  return dateObj.toISOString().slice(0,10);
+}
+function renderCalendar(){
+  const year = state.calendar.year;
+  const month = state.calendar.month;
+
+  // title
+  const monthName = new Date(year, month, 1).toLocaleDateString("pt-BR", { month:"long", year:"numeric" });
+  $("calTitle").textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+  // dow row
+  const dow = $("calDow");
+  dow.innerHTML = "";
+  DOW.forEach(d=>{
+    const el = document.createElement("div");
+    el.className = "dow";
+    el.textContent = d;
+    dow.appendChild(el);
+  });
+
+  // build day marks
+  const marksByDate = apptMarkIndex();
+
+  const daysWrap = $("calDays");
+  daysWrap.innerHTML = "";
+
+  const first = new Date(year, month, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysPrevMonth = new Date(year, month, 0).getDate();
+
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+
+  // 6 weeks grid (42 cells)
+  for(let i=0;i<42;i++){
+    const cell = document.createElement("div");
+    cell.className = "day";
+
+    const dayNum = i - startDow + 1;
+    let d;
+    let inMonth = true;
+
+    if(dayNum <= 0){
+      // previous month
+      inMonth = false;
+      d = new Date(year, month-1, daysPrevMonth + dayNum);
+      cell.classList.add("muted");
+    }else if(dayNum > daysInMonth){
+      // next month
+      inMonth = false;
+      d = new Date(year, month+1, dayNum - daysInMonth);
+      cell.classList.add("muted");
+    }else{
+      d = new Date(year, month, dayNum);
+    }
+
+    const dStr = ymd(d);
+    cell.textContent = d.getDate();
+
+    if(dStr === todayStr) cell.classList.add("today");
+    if(dStr === state.calendar.selectedDate) cell.classList.add("selected");
+
+    const mark = marksByDate[dStr];
+    if(mark){
+      const dot = document.createElement("div");
+      dot.className = "dot";
+      if(mark.bad) dot.classList.add("bad");
+      else if(mark.warn) dot.classList.add("warn");
+      daysWrap.appendChild(cell);
+      cell.appendChild(dot);
+    }else{
+      daysWrap.appendChild(cell);
+    }
+
+    cell.addEventListener("click", ()=>{
+      // if clicked on neighbor month, jump month too
+      state.calendar.selectedDate = dStr;
+      if(!inMonth){
+        state.calendar.year = d.getFullYear();
+        state.calendar.month = d.getMonth();
+      }
+      // set filters + date inputs
+      $("agDate").value = dStr;
+      $("agFilterDate").value = dStr;
+      localStorage.setItem(KEY, JSON.stringify(state));
+      renderCalendar();
+      renderAppts();
+    });
+  }
+}
+function apptMarkIndex(){
+  // mark day if there are appointments; color if any bad/warn status exists
+  const idx = {};
+  for(const ap of state.appts){
+    const date = ap.date;
+    if(!date) continue;
+    if(!idx[date]) idx[date] = { warn:false, bad:false };
+    const s = (ap.status||"").toLowerCase();
+    if(s==="faltou") idx[date].bad = true;
+    if(s==="pendente" || s==="remarcado") idx[date].warn = true;
+  }
+  return idx;
+}
+
+$("calPrev").addEventListener("click", ()=>{
+  state.calendar.month--;
+  if(state.calendar.month < 0){ state.calendar.month = 11; state.calendar.year--; }
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderCalendar();
+});
+$("calNext").addEventListener("click", ()=>{
+  state.calendar.month++;
+  if(state.calendar.month > 11){ state.calendar.month = 0; state.calendar.year++; }
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderCalendar();
+});
+$("calToday").addEventListener("click", ()=>{
+  const now = new Date();
+  state.calendar.year = now.getFullYear();
+  state.calendar.month = now.getMonth();
+  state.calendar.selectedDate = now.toISOString().slice(0,10);
+  $("agDate").value = state.calendar.selectedDate;
+  $("agFilterDate").value = state.calendar.selectedDate;
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderCalendar();
+  renderAppts();
+});
+
+/* =======================
    Agenda
 ======================= */
 setTodayIfEmpty("agDate");
+
 $("btnAddAppt").addEventListener("click", ()=>{
   const date = $("agDate").value;
   const time = $("agTime").value || "";
@@ -1078,32 +1213,33 @@ $("btnAddAppt").addEventListener("click", ()=>{
   const notes = safeText($("agNotes").value);
 
   if(!date) return toast("Selecione a data.");
-  if(!patient) return toast("Informe o paciente (pode digitar).");
+  if(!patient) return toast("Informe o paciente.");
 
   const now = Date.now();
-  state.appts.push({
-    id: uid("appt"),
-    date, time, patient, status, notes,
-    createdAt: now, updatedAt: now
-  });
+  state.appts.push({ id: uid("appt"), date, time, patient, status, notes, createdAt: now, updatedAt: now });
 
-  // If patient exists, update timestamp; else create quick patient record
   const p = state.patients.find(x=>x.name.toLowerCase()===patient.toLowerCase());
-  if(p){ p.updatedAt = now; }
-  else{
-    state.patients.push({ id: uid("pat"), name: patient, doc:"", birth:"", phone:"", notes:"", updatedAt: now });
-  }
+  if(p) p.updatedAt = now;
+  else state.patients.push({ id: uid("pat"), name: patient, doc:"", birth:"", phone:"", notes:"", updatedAt: now });
+
+  // keep calendar selected on that date
+  state.calendar.selectedDate = date;
+  const d = new Date(date+"T00:00:00");
+  state.calendar.year = d.getFullYear();
+  state.calendar.month = d.getMonth();
 
   saveState();
   toast("Agendamento salvo.");
   $("agNotes").value = "";
 });
+
 $("btnAgClear").addEventListener("click", ()=>{
   $("agTime").value = "";
   $("agPatient").value = "";
   $("agNotes").value = "";
   $("agStatus").value = "Confirmado";
 });
+
 $("btnAgApply").addEventListener("click", renderAppts);
 $("btnAgReset").addEventListener("click", ()=>{
   $("agFilterPatient").value = "";
@@ -1112,169 +1248,6 @@ $("btnAgReset").addEventListener("click", ()=>{
   renderAppts();
 });
 
-/* =======================
-   Receita draft
-======================= */
-setTodayIfEmpty("rxDate");
-$("rxMedSearch").addEventListener("input", ()=>{
-  const q = safeText($("rxMedSearch").value).toLowerCase();
-  const m = state.meds.find(x=>x.name.toLowerCase()===q);
-  if(m){
-    $("rxDose").value = m.dose || "";
-    $("rxNotes").value = m.notes || "";
-  }
-});
-$("btnRxAddItem").addEventListener("click", ()=>{
-  const medName = safeText($("rxMedSearch").value);
-  if(!medName) return toast("Escolha/digite um medicamento.");
-  const dose = safeText($("rxDose").value);
-  const notes = safeText($("rxNotes").value);
-  const qty = safeText($("rxQty").value);
-
-  state.rxDraft.patient = safeText($("rxPatient").value);
-  state.rxDraft.date = $("rxDate").value || "";
-  state.rxDraft.general = safeText($("rxGeneral").value);
-
-  state.rxDraft.items.push({
-    id: uid("rxitem"),
-    medName, dose, notes, qty
-  });
-
-  // Increase usage
-  const m = state.meds.find(x=>x.name.toLowerCase()===medName.toLowerCase());
-  if(m){ m.usedCount = (m.usedCount||0)+1; m.updatedAt = Date.now(); }
-
-  saveState();
-  toast("Item adicionado.");
-  $("rxMedSearch").value = "";
-  $("rxQty").value = "";
-  $("rxDose").value = "";
-  $("rxNotes").value = "";
-});
-$("btnRxClearItem").addEventListener("click", ()=>{
-  $("rxMedSearch").value = "";
-  $("rxQty").value = "";
-  $("rxDose").value = "";
-  $("rxNotes").value = "";
-});
-$("btnRxReset").addEventListener("click", ()=>{
-  state.rxDraft = { patient:"", date:"", items:[], general:"" };
-  $("rxPatient").value = "";
-  setTodayIfEmpty("rxDate");
-  $("rxGeneral").value = "";
-  saveState();
-  toast("Receita limpa.");
-});
-$("btnRxPreview").addEventListener("click", ()=>openPreview(buildRxDoc()));
-$("btnRxPrint").addEventListener("click", ()=>printNow(buildRxDoc()));
-
-/* =======================
-   Ficha clínica
-======================= */
-setTodayIfEmpty("fcDate");
-$("btnFcSave").addEventListener("click", ()=>{
-  const patient = safeText($("fcPatient").value);
-  const date = $("fcDate").value || "";
-  if(!patient) return toast("Selecione/digite o paciente.");
-  if(!date) return toast("Selecione a data.");
-
-  const ficha = {
-    id: uid("fc"),
-    patient,
-    date,
-    chief: safeText($("fcChief").value),
-    plan: safeText($("fcPlan").value),
-    hx: safeText($("fcHx").value),
-    exam: safeText($("fcExam").value),
-    evol: safeText($("fcEvol").value),
-    createdAt: Date.now()
-  };
-  state.fichas.unshift(ficha);
-  saveState();
-  toast("Ficha salva.");
-});
-$("btnFcPreview").addEventListener("click", ()=>openPreview(buildFichaDoc()));
-$("btnFcPrint").addEventListener("click", ()=>printNow(buildFichaDoc()));
-$("btnFcClear").addEventListener("click", ()=>{
-  ["fcPatient","fcChief","fcPlan","fcHx","fcExam","fcEvol"].forEach(id=>$(id).value="");
-  setTodayIfEmpty("fcDate");
-});
-$("btnFcFilter").addEventListener("click", renderFichas);
-
-/* =======================
-   Atestado
-======================= */
-setTodayIfEmpty("atDate");
-$("btnAtPreview").addEventListener("click", ()=>openPreview(buildAtestadoDoc()));
-$("btnAtPrint").addEventListener("click", ()=>printNow(buildAtestadoDoc()));
-$("btnAtClear").addEventListener("click", ()=>{
-  ["atPatient","atDays","atHours","atText"].forEach(id=>$(id).value="");
-  setTodayIfEmpty("atDate");
-});
-
-/* =======================
-   Orçamento
-======================= */
-setTodayIfEmpty("orDate");
-$("btnOrAdd").addEventListener("click", ()=>{
-  const name = safeText($("orItemName").value);
-  const value = safeText($("orItemValue").value);
-  if(!name) return toast("Digite o item do orçamento.");
-  state.orDraft.patient = safeText($("orPatient").value);
-  state.orDraft.date = $("orDate").value || "";
-  state.orDraft.notes = safeText($("orNotes").value);
-  state.orDraft.items.push({ id: uid("oritem"), name, value });
-  saveState();
-  toast("Item adicionado.");
-  $("orItemName").value = "";
-  $("orItemValue").value = "";
-});
-$("btnOrClearItem").addEventListener("click", ()=>{
-  $("orItemName").value = "";
-  $("orItemValue").value = "";
-});
-$("btnOrReset").addEventListener("click", ()=>{
-  state.orDraft = { patient:"", date:"", items:[], notes:"" };
-  $("orPatient").value = "";
-  $("orNotes").value = "";
-  setTodayIfEmpty("orDate");
-  saveState();
-  toast("Orçamento limpo.");
-});
-$("btnOrPreview").addEventListener("click", ()=>openPreview(buildOrcDoc()));
-$("btnOrPrint").addEventListener("click", ()=>printNow(buildOrcDoc()));
-
-/* =======================
-   Renderers
-======================= */
-function refreshAll(){
-  renderPatientsDatalist();
-  renderMedsDatalist();
-  renderAppts();
-  renderRxItems();
-  renderFichas();
-  renderOrItems();
-}
-function renderPatientsDatalist(){
-  const dl = $("patientsList");
-  dl.innerHTML = "";
-  state.patients.slice().sort(byUpdatedDesc).forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p.name;
-    dl.appendChild(opt);
-  });
-}
-function renderMedsDatalist(){
-  const dl = $("medsList");
-  dl.innerHTML = "";
-  state.meds.slice()
-    .sort((a,b)=> (b.usedCount||0)-(a.usedCount||0) || byUpdatedDesc(a,b))
-    .forEach(m=>{
-      const opt = document.createElement("option");
-      opt.value = m.name;
-      dl.appendChild(opt);
-    });
-}
 function statusChip(status){
   const s = (status||"").toLowerCase();
   if(s==="confirmado" || s==="atendido") return "ok";
@@ -1282,6 +1255,7 @@ function statusChip(status){
   if(s==="faltou") return "bad";
   return "";
 }
+
 function renderAppts(){
   const list = $("apptList");
   const empty = $("apptEmpty");
@@ -1311,25 +1285,22 @@ function renderAppts(){
     div.innerHTML = `
       <h3>${escapeHtml(ap.patient || "—")}</h3>
       <p>${escapeHtml(ap.date || "")} ${escapeHtml(ap.time || "")} • ${escapeHtml(ap.notes || "")}</p>
-      <div class="meta">
+      <div class="mini" style="margin-top:8px">
         <span class="chip ${chipClass}">${escapeHtml(ap.status || "—")}</span>
         <span class="chip">ID: ${escapeHtml(ap.id.slice(-8))}</span>
       </div>
       <div class="rightTools">
-        <button class="primary" data-act="use">📌 Usar nos documentos</button>
-        <button data-act="del" class="danger">🗑️ Excluir</button>
+        <button class="primary" data-act="use">📌 Usar nos docs</button>
+        <button class="danger" data-act="del">🗑️ Excluir</button>
       </div>
     `;
     div.querySelector('[data-act="use"]').addEventListener("click", ()=>{
-      // Fill patient across modules
       $("rxPatient").value = ap.patient || "";
       $("fcPatient").value = ap.patient || "";
       $("atPatient").value = ap.patient || "";
       $("orPatient").value = ap.patient || "";
-      // Some helpful defaults
       $("fcChief").value = ap.notes || $("fcChief").value;
       toast("Paciente puxado para os documentos.");
-      // Jump to receituário (feels natural)
       document.querySelector('.tab[data-tab="receita"]').click();
     });
     div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
@@ -1340,109 +1311,23 @@ function renderAppts(){
 
     list.appendChild(div);
   });
-}
 
-function renderRxItems(){
-  const list = $("rxItems");
-  const empty = $("rxEmpty");
-  list.innerHTML = "";
-  const items = state.rxDraft.items || [];
-  empty.style.display = items.length ? "none" : "block";
-
-  items.forEach(it=>{
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${escapeHtml(it.medName)}</h3>
-      <p><b>Uso:</b> ${escapeHtml(it.dose || "—")}</p>
-      <p><b>Qtd:</b> ${escapeHtml(it.qty || "—")}</p>
-      <p class="muted">${escapeHtml(it.notes || "")}</p>
-      <div class="rightTools">
-        <button class="danger" data-act="del">🗑️ Remover</button>
-      </div>
-    `;
-    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
-      state.rxDraft.items = state.rxDraft.items.filter(x=>x.id!==it.id);
-      saveState();
-      toast("Item removido.");
-    });
-    list.appendChild(div);
-  });
-}
-
-function renderFichas(){
-  const list = $("fcList");
-  const empty = $("fcEmpty");
-  list.innerHTML = "";
-  const q = safeText($("fcFilter").value).toLowerCase();
-
-  const items = state.fichas.filter(f=>{
-    if(!q) return true;
-    return (f.patient||"").toLowerCase().includes(q);
-  });
-
-  empty.style.display = items.length ? "none" : "block";
-
-  items.slice(0,30).forEach(f=>{
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${escapeHtml(f.patient)} <span class="chip">${escapeHtml(f.date||"")}</span></h3>
-      <p><b>Queixa:</b> ${escapeHtml(f.chief||"—")}</p>
-      <p class="muted"><b>Conduta:</b> ${escapeHtml(f.plan||"—")}</p>
-      <div class="rightTools">
-        <button class="primary" data-act="load">📌 Carregar</button>
-        <button class="danger" data-act="del">🗑️ Excluir</button>
-      </div>
-    `;
-    div.querySelector('[data-act="load"]').addEventListener("click", ()=>{
-      $("fcPatient").value = f.patient||"";
-      $("fcDate").value = f.date||"";
-      $("fcChief").value = f.chief||"";
-      $("fcPlan").value = f.plan||"";
-      $("fcHx").value = f.hx||"";
-      $("fcExam").value = f.exam||"";
-      $("fcEvol").value = f.evol||"";
-      toast("Ficha carregada.");
-    });
-    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
-      state.fichas = state.fichas.filter(x=>x.id!==f.id);
-      saveState();
-      toast("Ficha removida.");
-    });
-    list.appendChild(div);
-  });
-}
-
-function renderOrItems(){
-  const list = $("orItems");
-  const empty = $("orEmpty");
-  list.innerHTML = "";
-  const items = state.orDraft.items || [];
-  empty.style.display = items.length ? "none" : "block";
-
-  items.forEach(it=>{
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <h3>${escapeHtml(it.name)}</h3>
-      <p class="muted"><b>Valor:</b> ${escapeHtml(it.value || "—")}</p>
-      <div class="rightTools">
-        <button class="danger" data-act="del">🗑️ Remover</button>
-      </div>
-    `;
-    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
-      state.orDraft.items = state.orDraft.items.filter(x=>x.id!==it.id);
-      saveState();
-      toast("Item removido.");
-    });
-    list.appendChild(div);
-  });
+  // calendar refresh marks
+  renderCalendar();
 }
 
 /* =======================
-   Document Builder (template with border + header + footer)
+   Receitas / Fichas / Atestado / Orçamento
+   (mesmo núcleo do seu gerador anterior)
 ======================= */
+function escapeHtml(str){
+  return (str ?? "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 function getPatient(name){
   const n = safeText(name).toLowerCase();
   return state.patients.find(p => (p.name||"").toLowerCase()===n) || null;
@@ -1456,10 +1341,7 @@ function docTemplate({title, patientName, dateStr, bodyHtml}){
   const dent = state.dentist || {};
   const p = getPatient(patientName) || {name: patientName||"", doc:"", birth:"", phone:""};
   const addr = safeText(dent.addr) || "Endereço do profissional (configure na lateral).";
-  const stampRight = `
-    ${escapeHtml(dateStr || "")}<br>
-    <span class="muted">Gerado: ${escapeHtml(nowStamp())}</span>
-  `.trim();
+  const stampRight = `${escapeHtml(dateStr || "")}<br><span class="muted">Gerado: ${escapeHtml(nowStamp())}</span>`;
 
   return `
     <div class="docPage">
@@ -1501,14 +1383,56 @@ function docTemplate({title, patientName, dateStr, bodyHtml}){
     </div>
   `;
 }
-function escapeHtml(str){
-  return (str ?? "").toString()
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+
+const overlay = $("printOverlay");
+$("btnOverlayClose").addEventListener("click", ()=>overlay.classList.remove("show"));
+$("btnOverlayPrint").addEventListener("click", ()=>printNow($("printPreview").innerHTML));
+function openPreview(html){
+  $("printPreview").innerHTML = html;
+  overlay.classList.add("show");
 }
+function printNow(html){
+  $("printArea").innerHTML = html;
+  overlay.classList.remove("show");
+  setTimeout(()=>window.print(), 50);
+}
+
+/* ===== Receita ===== */
+setTodayIfEmpty("rxDate");
+$("rxMedSearch").addEventListener("input", ()=>{
+  const q = safeText($("rxMedSearch").value).toLowerCase();
+  const m = state.meds.find(x=>x.name.toLowerCase()===q);
+  if(m){ $("rxDose").value = m.dose || ""; $("rxNotes").value = m.notes || ""; }
+});
+$("btnRxAddItem").addEventListener("click", ()=>{
+  const medName = safeText($("rxMedSearch").value);
+  if(!medName) return toast("Escolha/digite um medicamento.");
+  const dose = safeText($("rxDose").value);
+  const notes = safeText($("rxNotes").value);
+  const qty = safeText($("rxQty").value);
+
+  state.rxDraft.patient = safeText($("rxPatient").value);
+  state.rxDraft.date = $("rxDate").value || "";
+  state.rxDraft.general = safeText($("rxGeneral").value);
+  state.rxDraft.items.push({ id: uid("rxitem"), medName, dose, notes, qty });
+
+  const m = state.meds.find(x=>x.name.toLowerCase()===medName.toLowerCase());
+  if(m){ m.usedCount = (m.usedCount||0)+1; m.updatedAt = Date.now(); }
+
+  saveState();
+  toast("Item adicionado.");
+  $("rxMedSearch").value=""; $("rxQty").value=""; $("rxDose").value=""; $("rxNotes").value="";
+});
+$("btnRxClearItem").addEventListener("click", ()=>{
+  $("rxMedSearch").value=""; $("rxQty").value=""; $("rxDose").value=""; $("rxNotes").value="";
+});
+$("btnRxReset").addEventListener("click", ()=>{
+  state.rxDraft = { patient:"", date:"", items:[], general:"" };
+  $("rxPatient").value=""; setTodayIfEmpty("rxDate"); $("rxGeneral").value="";
+  saveState(); toast("Receita limpa.");
+});
+$("btnRxPreview").addEventListener("click", ()=>openPreview(buildRxDoc()));
+$("btnRxPrint").addEventListener("click", ()=>printNow(buildRxDoc()));
 
 function buildRxDoc(){
   const patient = safeText($("rxPatient").value) || state.rxDraft.patient;
@@ -1526,14 +1450,39 @@ ${it.notes?`\n<b>Orientações:</b> ${escapeHtml(it.notes)}`:""}</p>
         <div style="height:8px"></div>
       `).join("") : `<p class="muted">Nenhum item adicionado.</p>`}
     </div>
-    ${general ? `
-    <div class="block">
-      <h4>Observações gerais</h4>
-      <p>${escapeHtml(general)}</p>
-    </div>` : ""}
+    ${general ? `<div class="block"><h4>Observações gerais</h4><p>${escapeHtml(general)}</p></div>` : ""}
   `;
   return docTemplate({title:"Receituário", patientName: patient, dateStr: date, bodyHtml: body});
 }
+
+/* ===== Ficha ===== */
+setTodayIfEmpty("fcDate");
+$("btnFcSave").addEventListener("click", ()=>{
+  const patient = safeText($("fcPatient").value);
+  const date = $("fcDate").value || "";
+  if(!patient) return toast("Selecione/digite o paciente.");
+  if(!date) return toast("Selecione a data.");
+
+  state.fichas.unshift({
+    id: uid("fc"),
+    patient, date,
+    chief: safeText($("fcChief").value),
+    plan: safeText($("fcPlan").value),
+    hx: safeText($("fcHx").value),
+    exam: safeText($("fcExam").value),
+    evol: safeText($("fcEvol").value),
+    createdAt: Date.now()
+  });
+  saveState();
+  toast("Ficha salva.");
+});
+$("btnFcPreview").addEventListener("click", ()=>openPreview(buildFichaDoc()));
+$("btnFcPrint").addEventListener("click", ()=>printNow(buildFichaDoc()));
+$("btnFcClear").addEventListener("click", ()=>{
+  ["fcPatient","fcChief","fcPlan","fcHx","fcExam","fcEvol"].forEach(id=>$(id).value="");
+  setTodayIfEmpty("fcDate");
+});
+$("btnFcFilter").addEventListener("click", renderFichas);
 
 function buildFichaDoc(){
   const patient = safeText($("fcPatient").value);
@@ -1548,145 +1497,212 @@ function buildFichaDoc(){
   return docTemplate({title:"Ficha Clínica", patientName: patient, dateStr: date, bodyHtml: body});
 }
 
+/* ===== Atestado ===== */
+setTodayIfEmpty("atDate");
+$("btnAtPreview").addEventListener("click", ()=>openPreview(buildAtestadoDoc()));
+$("btnAtPrint").addEventListener("click", ()=>printNow(buildAtestadoDoc()));
+$("btnAtClear").addEventListener("click", ()=>{
+  ["atPatient","atDays","atHours","atText"].forEach(id=>$(id).value="");
+  setTodayIfEmpty("atDate");
+});
+
 function buildAtestadoDoc(){
   const patient = safeText($("atPatient").value);
   const date = $("atDate").value || "";
   const days = safeText($("atDays").value);
   const hours = safeText($("atHours").value);
   let text = safeText($("atText").value);
-
   if(!text){
     text = "Atesto para os devidos fins que o(a) paciente acima identificado(a) esteve sob atendimento odontológico nesta data, necessitando de afastamento de suas atividades pelo período informado, a contar de hoje.";
   }
-
   const details = [];
   if(days) details.push(`<p><b>Período:</b> ${escapeHtml(days)} dia(s).</p>`);
   if(hours) details.push(`<p><b>Horário:</b> ${escapeHtml(hours)}.</p>`);
-
-  const body = `
-    <div class="block">
-      <h4>Declaração</h4>
-      <p>${escapeHtml(text)}</p>
-      ${details.join("")}
-    </div>
-  `;
+  const body = `<div class="block"><h4>Declaração</h4><p>${escapeHtml(text)}</p>${details.join("")}</div>`;
   return docTemplate({title:"Atestado", patientName: patient, dateStr: date, bodyHtml: body});
 }
+
+/* ===== Orçamento ===== */
+setTodayIfEmpty("orDate");
+$("btnOrAdd").addEventListener("click", ()=>{
+  const name = safeText($("orItemName").value);
+  const value = safeText($("orItemValue").value);
+  if(!name) return toast("Digite o item do orçamento.");
+  state.orDraft.patient = safeText($("orPatient").value);
+  state.orDraft.date = $("orDate").value || "";
+  state.orDraft.notes = safeText($("orNotes").value);
+  state.orDraft.items.push({ id: uid("oritem"), name, value });
+  saveState();
+  toast("Item adicionado.");
+  $("orItemName").value=""; $("orItemValue").value="";
+});
+$("btnOrClearItem").addEventListener("click", ()=>{ $("orItemName").value=""; $("orItemValue").value=""; });
+$("btnOrReset").addEventListener("click", ()=>{
+  state.orDraft = { patient:"", date:"", items:[], notes:"" };
+  $("orPatient").value=""; $("orNotes").value=""; setTodayIfEmpty("orDate");
+  saveState(); toast("Orçamento limpo.");
+});
+$("btnOrPreview").addEventListener("click", ()=>openPreview(buildOrcDoc()));
+$("btnOrPrint").addEventListener("click", ()=>printNow(buildOrcDoc()));
 
 function buildOrcDoc(){
   const patient = safeText($("orPatient").value) || state.orDraft.patient;
   const date = $("orDate").value || state.orDraft.date || "";
   const notes = safeText($("orNotes").value) || state.orDraft.notes || "";
   const items = state.orDraft.items || [];
-
   const body = `
     <div class="block">
       <h4>Itens</h4>
-      ${items.length ? items.map((it, idx)=>`
-        <p><b>${idx+1}.</b> ${escapeHtml(it.name)} — <b>${escapeHtml(it.value || "—")}</b></p>
-      `).join("") : `<p class="muted">Nenhum item adicionado.</p>`}
+      ${items.length ? items.map((it, idx)=>`<p><b>${idx+1}.</b> ${escapeHtml(it.name)} — <b>${escapeHtml(it.value || "—")}</b></p>`).join("") : `<p class="muted">Nenhum item adicionado.</p>`}
     </div>
-    ${notes ? `
-    <div class="block">
-      <h4>Condições / Observações</h4>
-      <p>${escapeHtml(notes)}</p>
-    </div>` : ""}
+    ${notes ? `<div class="block"><h4>Condições / Observações</h4><p>${escapeHtml(notes)}</p></div>` : ""}
   `;
   return docTemplate({title:"Orçamento", patientName: patient, dateStr: date, bodyHtml: body});
 }
 
 /* =======================
-   Preview / Print
+   Renderers
 ======================= */
-const overlay = $("printOverlay");
-$("btnOverlayClose").addEventListener("click", ()=>overlay.classList.remove("show"));
-$("btnOverlayPrint").addEventListener("click", ()=>{
-  // print currently previewed content
-  printNow($("printPreview").innerHTML);
-});
-function openPreview(html){
-  $("printPreview").innerHTML = html;
-  $("printTitle").textContent = "Pré-visualização";
-  $("printSubtitle").textContent = "Borda com topo/rodapé • pronto pra PDF";
-  overlay.classList.add("show");
+function refreshAll(){
+  renderPatientsDatalist();
+  renderMedsDatalist();
+  renderAppts();
+  renderRxItems();
+  renderFichas();
+  renderOrItems();
 }
-function printNow(html){
-  // Put into dedicated print area then call print
-  const area = $("printArea");
-  area.innerHTML = html;
-  // Close overlay to avoid any print weirdness
-  overlay.classList.remove("show");
-  setTimeout(()=>window.print(), 50);
+
+function renderPatientsDatalist(){
+  const dl = $("patientsList");
+  dl.innerHTML = "";
+  state.patients.slice().sort(byUpdatedDesc).forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    dl.appendChild(opt);
+  });
+}
+
+function renderMedsDatalist(){
+  const dl = $("medsList");
+  dl.innerHTML = "";
+  state.meds.slice()
+    .sort((a,b)=> (b.usedCount||0)-(a.usedCount||0) || (b.updatedAt||0)-(a.updatedAt||0))
+    .forEach(m=>{
+      const opt = document.createElement("option");
+      opt.value = m.name;
+      dl.appendChild(opt);
+    });
+}
+
+function renderRxItems(){
+  const list = $("rxItems");
+  const empty = $("rxEmpty");
+  list.innerHTML = "";
+  const items = state.rxDraft.items || [];
+  empty.style.display = items.length ? "none" : "block";
+  items.forEach(it=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(it.medName)}</h3>
+      <p><b>Uso:</b> ${escapeHtml(it.dose || "—")}</p>
+      <p><b>Qtd:</b> ${escapeHtml(it.qty || "—")}</p>
+      <p class="small">${escapeHtml(it.notes || "")}</p>
+      <div class="rightTools">
+        <button class="danger" data-act="del">🗑️ Remover</button>
+      </div>
+    `;
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.rxDraft.items = state.rxDraft.items.filter(x=>x.id!==it.id);
+      saveState();
+      toast("Item removido.");
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderFichas(){
+  const list = $("fcList");
+  const empty = $("fcEmpty");
+  list.innerHTML = "";
+  const q = safeText($("fcFilter").value).toLowerCase();
+  const items = state.fichas.filter(f=> !q || (f.patient||"").toLowerCase().includes(q));
+  empty.style.display = items.length ? "none" : "block";
+
+  items.slice(0,30).forEach(f=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(f.patient)} <span class="chip">${escapeHtml(f.date||"")}</span></h3>
+      <p><b>Queixa:</b> ${escapeHtml(f.chief||"—")}</p>
+      <p class="small"><b>Conduta:</b> ${escapeHtml(f.plan||"—")}</p>
+      <div class="rightTools">
+        <button class="primary" data-act="load">📌 Carregar</button>
+        <button class="danger" data-act="del">🗑️ Excluir</button>
+      </div>
+    `;
+    div.querySelector('[data-act="load"]').addEventListener("click", ()=>{
+      $("fcPatient").value = f.patient||"";
+      $("fcDate").value = f.date||"";
+      $("fcChief").value = f.chief||"";
+      $("fcPlan").value = f.plan||"";
+      $("fcHx").value = f.hx||"";
+      $("fcExam").value = f.exam||"";
+      $("fcEvol").value = f.evol||"";
+      toast("Ficha carregada.");
+    });
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.fichas = state.fichas.filter(x=>x.id!==f.id);
+      saveState();
+      toast("Ficha removida.");
+    });
+    list.appendChild(div);
+  });
+}
+
+function renderOrItems(){
+  const list = $("orItems");
+  const empty = $("orEmpty");
+  list.innerHTML = "";
+  const items = state.orDraft.items || [];
+  empty.style.display = items.length ? "none" : "block";
+  items.forEach(it=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${escapeHtml(it.name)}</h3>
+      <p class="small"><b>Valor:</b> ${escapeHtml(it.value || "—")}</p>
+      <div class="rightTools">
+        <button class="danger" data-act="del">🗑️ Remover</button>
+      </div>
+    `;
+    div.querySelector('[data-act="del"]').addEventListener("click", ()=>{
+      state.orDraft.items = state.orDraft.items.filter(x=>x.id!==it.id);
+      saveState();
+      toast("Item removido.");
+    });
+    list.appendChild(div);
+  });
 }
 
 /* =======================
-   Backup / Reset
-======================= */
-$("btnBackup").addEventListener("click", ()=>{
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `btx-docs-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast("Backup exportado.");
-});
-$("backupFile").addEventListener("change", async (e)=>{
-  const f = e.target.files?.[0];
-  if(!f) return;
-  try{
-    const text = await f.text();
-    const obj = JSON.parse(text);
-    // minimal validation
-    if(!obj || typeof obj !== "object") throw new Error("arquivo inválido");
-    Object.assign(state, defaultState(), obj);
-    saveState();
-    toast("Backup importado com sucesso.");
-  }catch(err){
-    toast("Falha ao importar backup (JSON inválido).");
-  }finally{
-    e.target.value = "";
-  }
-});
-$("btnReset").addEventListener("click", ()=>{
-  const ok = confirm("Tem certeza que quer zerar TUDO? Isso apaga agenda, pacientes, meds e documentos.");
-  if(!ok) return;
-  localStorage.removeItem(KEY);
-  location.reload();
-});
-
-/* Quick print: prints what is active (most useful) */
-$("btnQuickPrint").addEventListener("click", ()=>{
-  const active = document.querySelector(".tab.active")?.dataset?.tab || "agenda";
-  if(active==="receita") return printNow(buildRxDoc());
-  if(active==="ficha") return printNow(buildFichaDoc());
-  if(active==="atestado") return printNow(buildAtestadoDoc());
-  if(active==="orcamento") return printNow(buildOrcDoc());
-  toast("Dica: para imprimir, vá em Receita/Ficha/Atestado/Orçamento.");
-});
-
-/* =======================
-   Initial fill (drafts)
+   Draft sync
 ======================= */
 function hydrateDrafts(){
-  // RX
   $("rxPatient").value = state.rxDraft.patient || "";
   if(state.rxDraft.date) $("rxDate").value = state.rxDraft.date;
   $("rxGeneral").value = state.rxDraft.general || "";
 
-  // OR
   $("orPatient").value = state.orDraft.patient || "";
   if(state.orDraft.date) $("orDate").value = state.orDraft.date;
   $("orNotes").value = state.orDraft.notes || "";
-}
-hydrateDrafts();
-refreshAll();
-renderRxItems();
-renderOrItems();
 
-// Keep drafts in sync
+  // calendar selected date into filters
+  if(state.calendar.selectedDate){
+    $("agFilterDate").value = state.calendar.selectedDate;
+    $("agDate").value = $("agDate").value || state.calendar.selectedDate;
+  }
+}
 ["rxPatient","rxDate","rxGeneral"].forEach(id=>{
   $(id).addEventListener("input", ()=>{
     state.rxDraft.patient = safeText($("rxPatient").value);
@@ -1703,6 +1719,62 @@ renderOrItems();
     localStorage.setItem(KEY, JSON.stringify(state));
   });
 });
+
+/* =======================
+   Backup / Reset / Quick print
+======================= */
+$("btnBackup").addEventListener("click", ()=>{
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `btx-docs-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Backup exportado.");
+});
+
+$("backupFile").addEventListener("change", async (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  try{
+    const text = await f.text();
+    const obj = JSON.parse(text);
+    if(!obj || typeof obj !== "object") throw new Error("inválido");
+    Object.assign(state, defaultState(), obj);
+    saveState();
+    toast("Backup importado.");
+  }catch(err){
+    toast("Falha ao importar backup (JSON inválido).");
+  }finally{
+    e.target.value = "";
+  }
+});
+
+$("btnReset").addEventListener("click", ()=>{
+  const ok = confirm("Tem certeza que quer zerar TUDO?");
+  if(!ok) return;
+  localStorage.removeItem(KEY);
+  location.reload();
+});
+
+$("btnQuickPrint").addEventListener("click", ()=>{
+  const active = document.querySelector(".tab.active")?.dataset?.tab || "agenda";
+  if(active==="receita") return printNow(buildRxDoc());
+  if(active==="ficha") return printNow(buildFichaDoc());
+  if(active==="atestado") return printNow(buildAtestadoDoc());
+  if(active==="orcamento") return printNow(buildOrcDoc());
+  toast("Pra imprimir: abra Receita/Ficha/Atestado/Orçamento.");
+});
+
+/* =======================
+   Init
+======================= */
+hydrateDrafts();
+refreshAll();
+initCalendar();
+renderAppts(); // ensures calendar dots show
 </script>
 </body>
 </html>
