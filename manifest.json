@@ -1,0 +1,13 @@
+{
+  "name": "BTX Docs",
+  "short_name": "BTX Docs",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#2a63ff",
+  "description": "Agenda com calendário + gerador de documentos clínicos offline.",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
